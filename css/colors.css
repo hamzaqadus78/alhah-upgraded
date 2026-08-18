@@ -1,0 +1,632 @@
+/* ============================================================
+   ALHAH INDUSTRIES — Turquoise Harmony Color Override
+   Primary:  #006D77  (deep teal)
+   Mid:      #0097A7  (medium teal)
+   Accent:   #00C49A  (emerald)
+   Pale:     #E8F5A3  (soft lime — used sparingly as highlight)
+   ============================================================ */
+
+:root {
+  --teal:        #006D77;
+  --teal-mid:    #007D8A;
+  --teal-light:  #0097A7;
+  --emerald:     #00C49A;
+  --pale:        #E8F5F6;       /* soft teal-white for backgrounds */
+  --pale-lime:   #F0FAE9;       /* very subtle lime tint */
+  --teal-shadow: rgba(0,109,119,.25);
+  --em-shadow:   rgba(0,196,154,.22);
+}
+
+/* Bootstrap primary override */
+:root {
+  --bs-primary:     #006D77 !important;
+  --bs-primary-rgb: 0,109,119 !important;
+}
+
+/* ── TOPBAR ─────────────────────────────────────────────────── */
+.container-fluid.bg-primary.text-white {
+  background-color: var(--teal) !important;
+}
+.container-fluid.bg-primary .btn-sm-square.btn-light.text-primary {
+  color: var(--teal) !important;
+}
+.container-fluid.bg-primary .btn-sm-square.btn-light.text-primary:hover {
+  background-color: var(--emerald) !important;
+  border-color: var(--emerald) !important;
+  color: #fff !important;
+}
+
+/* ── NAVBAR ─────────────────────────────────────────────────── */
+.navbar .navbar-nav .nav-link:hover,
+.navbar .navbar-nav .nav-link.active {
+  color: var(--teal) !important;
+}
+.dropdown-item.active,
+.dropdown-item:active {
+  background-color: var(--teal) !important;
+}
+.dropdown-item:hover,
+.dropdown-item:focus {
+  background-color: var(--pale) !important;
+  color: var(--teal) !important;
+}
+
+/* ── SEARCH BAR ─────────────────────────────────────────────── */
+#siteSearchBar {
+  border-color: var(--teal) !important;
+}
+#siteSearchBar:focus {
+  border-color: var(--emerald) !important;
+  box-shadow: 0 0 0 3px rgba(0,196,154,.18) !important;
+}
+.search-result-item:hover {
+  background: var(--pale) !important;
+  border-left-color: var(--teal) !important;
+}
+.search-result-item .result-cat { color: var(--teal-light) !important; }
+.search-result-item .result-arrow { color: var(--emerald) !important; }
+.search-no-results i { color: var(--teal-light) !important; }
+
+/* ── CART NAV BUTTON ────────────────────────────────────────── */
+.cart-nav-btn {
+  background: var(--teal) !important;
+  border-color: var(--teal) !important;
+}
+.cart-nav-btn:hover {
+  background: var(--emerald) !important;
+  border-color: var(--emerald) !important;
+  box-shadow: 0 4px 14px var(--em-shadow) !important;
+}
+.cart-badge { background: var(--emerald) !important; }
+
+/* ── BUTTONS (global) ───────────────────────────────────────── */
+.btn-primary {
+  background-color: var(--teal) !important;
+  border-color: var(--teal) !important;
+  color: #fff !important;
+}
+.btn-primary:hover,
+.btn-primary:focus,
+.btn-primary:active {
+  background-color: var(--emerald) !important;
+  border-color: var(--emerald) !important;
+  box-shadow: 0 6px 18px var(--em-shadow) !important;
+  color: #fff !important;
+}
+.btn-outline-primary {
+  color: var(--teal) !important;
+  border-color: var(--teal) !important;
+}
+.btn-outline-primary:hover {
+  background-color: var(--teal) !important;
+  color: #fff !important;
+}
+
+/* ── CAROUSEL ───────────────────────────────────────────────── */
+.carousel-caption .btn-primary {
+  background-color: var(--teal) !important;
+  border-color: var(--teal) !important;
+}
+.carousel-caption .btn-primary:hover {
+  background-color: var(--emerald) !important;
+  border-color: var(--emerald) !important;
+}
+.carousel-caption .btn-outline-light:hover {
+  background-color: var(--emerald) !important;
+  border-color: var(--emerald) !important;
+}
+/* eyebrow badges in carousel */
+.carousel-caption div[style*="background:rgba(200"] {
+  background: var(--emerald) !important;
+}
+
+/* ── FEATURES STRIP ─────────────────────────────────────────── */
+.features-strip { background: var(--teal) !important; }
+.feature-item i { color: var(--pale-lime) !important; }
+
+/* ── CATEGORY SECTION ───────────────────────────────────────── */
+.category-wrapper { background: var(--teal) !important; }
+.category-header-section h3::before { background: var(--teal-mid) !important; }
+.flip-card-back {
+  background: linear-gradient(135deg, var(--teal) 0%, var(--teal-mid) 100%) !important;
+}
+.btn-category:hover { color: var(--teal) !important; }
+
+/* ── STATS BAR ──────────────────────────────────────────────── */
+.stats-section { background: var(--teal) !important; }
+.stat-number span { color: var(--pale-lime) !important; }
+
+/* ── WHY CHOOSE US ──────────────────────────────────────────── */
+.why-icon {
+  background: linear-gradient(135deg, var(--teal), var(--teal-light)) !important;
+  color: var(--pale-lime) !important;
+}
+.why-card:hover .why-icon {
+  background: var(--emerald) !important;
+  color: #fff !important;
+}
+.why-card:hover { border-color: rgba(0,196,154,.35) !important; }
+.why-card::after {
+  background: linear-gradient(90deg, var(--teal), var(--emerald)) !important;
+}
+
+/* ── SECTION LABELS / TAGS ──────────────────────────────────── */
+.section-title-badge {
+  background: rgba(0,109,119,.09) !important;
+  color: var(--teal) !important;
+}
+.product-category-tag { color: var(--teal-light) !important; }
+.product-badge { background: var(--teal) !important; }
+.product-badge.new { background: var(--emerald) !important; }
+
+/* ── FILTER / SEARCH ────────────────────────────────────────── */
+.filter-tab.active,
+.filter-tab:hover {
+  background: var(--teal) !important;
+  border-color: var(--teal) !important;
+  color: #fff !important;
+}
+.product-search-wrap input:focus {
+  border-color: var(--teal) !important;
+  box-shadow: 0 0 0 3px rgba(0,109,119,.1) !important;
+}
+
+/* ── ADD TO ENQUIRY BUTTON ───────────────────────────────────── */
+.btn-add-cart {
+  background: var(--teal) !important;
+  border-color: var(--teal) !important;
+}
+.btn-add-cart:hover {
+  background: var(--emerald) !important;
+  border-color: var(--emerald) !important;
+  box-shadow: 0 4px 14px var(--em-shadow) !important;
+}
+.btn-add-cart.added { background: #059669 !important; border-color: #059669 !important; }
+.btn-inquire:hover {
+  background: #25D366 !important;
+  border-color: #25D366 !important;
+  color: #fff !important;
+}
+
+/* ── text-primary icons ─────────────────────────────────────── */
+.text-primary { color: var(--emerald) !important; }
+
+/* ── ABOUT IMG border ───────────────────────────────────────── */
+.about-img::before,
+.about-img1::before { border-color: var(--teal) !important; }
+
+/* ── FOOTER ─────────────────────────────────────────────────── */
+.footer .btn.btn-link:hover { color: var(--emerald) !important; }
+.footer .btn.btn-link::before { color: var(--emerald) !important; }
+.footer.bg-dark { background-color: #021A1C !important; }
+.copyright { background-color: #010E0F !important; }
+.copyright a:hover { color: var(--emerald) !important; }
+
+/* ── BACK TO TOP ────────────────────────────────────────────── */
+.back-to-top {
+  background-color: var(--teal) !important;
+  border-color: var(--teal) !important;
+  color: #fff !important;
+}
+.back-to-top:hover {
+  background-color: var(--emerald) !important;
+  border-color: var(--emerald) !important;
+}
+
+/* ── SPINNER ────────────────────────────────────────────────── */
+.spinner-border.text-primary { color: var(--teal) !important; }
+
+/* ── CART DRAWER ────────────────────────────────────────────── */
+.cart-drawer-header {
+  background: var(--teal) !important;
+  border-bottom-color: rgba(0,196,154,.3) !important;
+}
+.cart-item:hover {
+  border-color: rgba(0,196,154,.4) !important;
+  background: var(--pale) !important;
+}
+.qty-btn:hover { border-color: var(--teal) !important; color: var(--teal) !important; }
+.cart-note {
+  background: var(--pale) !important;
+  border-left-color: var(--emerald) !important;
+}
+.btn-checkout {
+  background: var(--teal) !important;
+  border-color: var(--teal) !important;
+}
+.btn-checkout:hover {
+  background: var(--emerald) !important;
+  border-color: var(--emerald) !important;
+  box-shadow: 0 6px 20px var(--em-shadow) !important;
+}
+
+/* ── CHECKOUT MODAL ─────────────────────────────────────────── */
+.checkout-modal-header { background: var(--teal) !important; }
+.btn-submit-inquiry {
+  background: var(--teal) !important;
+  border-color: var(--teal) !important;
+}
+.btn-submit-inquiry:hover {
+  background: var(--emerald) !important;
+  border-color: var(--emerald) !important;
+  box-shadow: 0 6px 20px var(--em-shadow) !important;
+}
+
+/* ── TOAST ──────────────────────────────────────────────────── */
+.cart-toast {
+  background: var(--teal) !important;
+  border-left: 4px solid var(--emerald) !important;
+}
+.cart-toast i { color: var(--pale-lime) !important; }
+
+/* ── SERVICE / TEAM ─────────────────────────────────────────── */
+.service .service-inner::before { background: var(--teal) !important; }
+.team .team-item .team-social { background: var(--teal) !important; }
+
+/* ── HERITAGE (about page) ──────────────────────────────────── */
+.heritage-hover-card {
+  box-shadow:
+    0 20px 35px -10px rgba(0,0,0,.1),
+    0 0 20px rgba(0,109,119,.2),
+    0 0 30px rgba(0,109,119,.12) !important;
+}
+.heritage-hover-card:hover {
+  box-shadow:
+    0 30px 45px -12px rgba(0,0,0,.2),
+    0 0 30px rgba(0,196,154,.35),
+    0 0 45px rgba(0,109,119,.2) !important;
+}
+.heritage-title {
+  background: linear-gradient(135deg, var(--teal), var(--teal-light)) !important;
+  background-clip: text !important;
+  -webkit-background-clip: text !important;
+  color: transparent !important;
+}
+.deco-line {
+  background: linear-gradient(90deg, transparent, var(--emerald), transparent) !important;
+}
+
+/* ── WHATSAPP popup ─────────────────────────────────────────── */
+.whatsapp-simple-popup { border-color: rgba(0,109,119,.15) !important; }
+
+/* ================================================================
+   PATCH — Footer social buttons, font, gold cleanup
+   ================================================================ */
+
+/* ── GLOBAL FONT OVERRIDE (DM Sans across everything) ─────────── */
+body,
+.btn, button, input, textarea, select, optgroup,
+.navbar, .nav-link, .dropdown-item,
+h1, h2, h3, h4, h5, h6,
+.display-1, .display-2, .display-3,
+.display-4, .display-5, .display-6,
+p, small, span, a, li, td, th,
+.footer, .copyright {
+  font-family: 'DM Sans', system-ui, -apple-system, sans-serif !important;
+}
+
+/* ── FOOTER SOCIAL BUTTONS (btn-square btn-light) ──────────────
+   Currently: plain white circle with dark icon
+   Target:    teal border + icon, fills emerald on hover
+──────────────────────────────────────────────────────────────── */
+.footer .btn-square.btn-light,
+.footer .btn.btn-square.btn-light {
+  background-color: transparent !important;
+  border: 2px solid rgba(0,196,154,.45) !important;
+  color: rgba(255,255,255,.75) !important;
+  border-radius: 10px !important;
+  width: 40px !important;
+  height: 40px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  transition: all .28s cubic-bezier(.4,0,.2,1) !important;
+  font-size: .9rem !important;
+  text-decoration: none !important;
+}
+.footer .btn-square.btn-light:hover,
+.footer .btn.btn-square.btn-light:hover {
+  background-color: var(--emerald, #00C49A) !important;
+  border-color: var(--emerald, #00C49A) !important;
+  color: #fff !important;
+  transform: translateY(-3px) !important;
+  box-shadow: 0 6px 16px rgba(0,196,154,.35) !important;
+}
+
+/* ── TOPBAR social buttons (btn-sm-square btn-light) ───────────── */
+.container-fluid.bg-primary .btn-sm-square.btn-light {
+  background-color: rgba(255,255,255,.12) !important;
+  border: 1px solid rgba(255,255,255,.2) !important;
+  color: rgba(255,255,255,.85) !important;
+  border-radius: 6px !important;
+  transition: all .2s ease !important;
+}
+.container-fluid.bg-primary .btn-sm-square.btn-light:hover {
+  background-color: var(--emerald, #00C49A) !important;
+  border-color: var(--emerald, #00C49A) !important;
+  color: #fff !important;
+}
+
+/* ── FOOTER QUICK LINKS (btn-link) ─────────────────────────────── */
+.footer .btn.btn-link {
+  color: rgba(255,255,255,.55) !important;
+  padding: 4px 0 !important;
+  font-size: .88rem !important;
+  font-weight: 500 !important;
+  letter-spacing: .2px !important;
+  transition: all .22s ease !important;
+  position: relative !important;
+}
+.footer .btn.btn-link:hover {
+  color: var(--emerald, #00C49A) !important;
+  padding-left: 8px !important;
+  letter-spacing: .3px !important;
+}
+.footer .btn.btn-link::before {
+  color: var(--emerald, #00C49A) !important;
+}
+
+/* ── KILL ALL REMAINING GOLD / AMBER / YELLOW ──────────────────── */
+/* catch any inline or class-based CE9233 / C8961E / B8860B / D4A017 */
+[style*="background:#C8961E"],
+[style*="background: #C8961E"] {
+  background-color: var(--emerald, #00C49A) !important;
+}
+[style*="color:#C8961E"],
+[style*="color: #C8961E"] {
+  color: var(--emerald, #00C49A) !important;
+}
+/* cart badge in footer */
+.cart-badge,
+span.cart-badge {
+  background: var(--emerald, #00C49A) !important;
+}
+/* heritage card gold elements */
+.heritage-title,
+.heritage-icon,
+.deco-line {
+  filter: none !important;
+}
+/* any remaining gold gradient or color var */
+:root {
+  --brand-accent:       #00C49A !important;
+  --brand-accent-light: #4DD9B8 !important;
+  --gold:               #00C49A !important;
+  --gold-light:         #4DD9B8 !important;
+  --gold-pale:          #E8F5F6 !important;
+  --gold-shadow:        rgba(0,196,154,.25) !important;
+}
+
+/* ── PRODUCT SECTION TITLE BADGE ────────────────────────────────── */
+.section-title-badge {
+  background: rgba(0,109,119,.1) !important;
+  color: var(--teal, #006D77) !important;
+  border-radius: 50px !important;
+}
+
+/* ── SEARCH BAR font ─────────────────────────────────────────────── */
+#siteSearchBar,
+#siteSearchBar::placeholder {
+  font-family: 'DM Sans', system-ui, sans-serif !important;
+}
+
+/* ── CHECKOUT / CART form inputs ─────────────────────────────────── */
+.checkout-form-group input,
+.checkout-form-group textarea,
+.checkout-form-group select {
+  font-family: 'DM Sans', system-ui, sans-serif !important;
+}
+
+/* ── BACK TO TOP teal ────────────────────────────────────────────── */
+.back-to-top {
+  background-color: var(--teal, #006D77) !important;
+  border-radius: 10px !important;
+}
+.back-to-top:hover {
+  background-color: var(--emerald, #00C49A) !important;
+}
+
+/* ── SPINNER teal ─────────────────────────────────────────────────── */
+#spinner .spinner-border { color: var(--teal, #006D77) !important; }
+
+/* ================================================================
+   ROUND 3 FIXES — Category bg, breadcrumb gold, nav icon dark,
+                   interactive buttons, email sending
+   ================================================================ */
+
+/* ── 1. CATEGORY SECTION — distinct background (dark teal, not same as stats) ── */
+.category-wrapper {
+  background: #004B52 !important;   /* darker teal, clearly different from stats bar */
+  position: relative;
+}
+/* The heading band behind "MAIN CATEGORIES" — even darker pill */
+.category-header-section h3::before {
+  background: rgba(0,0,0,.25) !important;
+  border-radius: 50px !important;
+}
+
+/* ── 2. BREADCRUMB LINKS — gold → teal (About, Contact pages) ── */
+.breadcrumb-item a,
+.breadcrumb-item a:hover,
+ol.breadcrumb a,
+ol.breadcrumb a:visited {
+  color: var(--teal, #006D77) !important;
+  text-decoration: none !important;
+}
+.breadcrumb-item a:hover { color: var(--emerald, #00C49A) !important; }
+.breadcrumb-item.active { color: #555 !important; }
+
+/* Page header "Home" link (bootstrap uses a:link color from --bs-primary = was gold) */
+.page-header a,
+.page-header .breadcrumb-item a {
+  color: var(--teal, #006D77) !important;
+}
+.page-header .breadcrumb-item a:hover {
+  color: var(--emerald, #00C49A) !important;
+}
+
+/* about/contact page header box — the white box with ABOUT/CONTACT title */
+.container-fluid.page-header .bg-white a {
+  color: var(--teal, #006D77) !important;
+}
+.container-fluid.page-header .bg-white a:hover {
+  color: var(--emerald, #00C49A) !important;
+}
+
+/* ── 3. DentalSurgery / Spinal / Neuro page-header links too ── */
+a { color: var(--teal, #006D77) !important; }
+a:hover { color: var(--teal-light, #0097A7) !important; }
+/* But keep white text white in topbar/footer/buttons */
+.container-fluid.bg-primary a,
+.navbar-brand,
+.btn-primary, .btn-primary:hover,
+.cart-nav-btn, .cart-nav-btn:hover,
+.btn-add-cart, .btn-add-cart:hover,
+.footer a.btn,
+.footer .btn.btn-link,
+.carousel-caption a,
+.carousel-caption button,
+.flip-card-back a { color: inherit !important; }
+
+/* ── 4. NAVBAR CART BUTTON — icon dark before hover, emerald on hover ── */
+/* The cart button icon should be dark (readable) at rest */
+.cart-nav-btn {
+  background: transparent !important;
+  border: 2px solid var(--teal, #006D77) !important;
+  color: var(--teal, #006D77) !important;
+  font-weight: 700 !important;
+}
+.cart-nav-btn i,
+.cart-nav-btn span { color: var(--teal, #006D77) !important; }
+.cart-nav-btn:hover {
+  background: var(--emerald, #00C49A) !important;
+  border-color: var(--emerald, #00C49A) !important;
+  color: #fff !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 6px 18px rgba(0,196,154,.3) !important;
+}
+.cart-nav-btn:hover i,
+.cart-nav-btn:hover span { color: #fff !important; }
+.cart-badge { background: var(--emerald, #00C49A) !important; color: #fff !important; }
+
+/* ── 5. INTERACTIVE BUTTONS — all key CTA buttons with hover animation ──────── */
+
+/* Base interactive button mixin — applied to all major CTAs */
+.btn-primary,
+.btn-outline-primary,
+.btn-outline-light,
+.cart-nav-btn,
+.btn-add-cart,
+.btn-checkout,
+.btn-submit-inquiry,
+.btn-category {
+  position: relative !important;
+  overflow: hidden !important;
+  transition: all .32s cubic-bezier(.4,0,.2,1) !important;
+  letter-spacing: .4px !important;
+}
+
+/* Explore Range / View Full Catalogue / primary CTA buttons */
+.btn-primary {
+  background: var(--teal, #006D77) !important;
+  border: 2px solid var(--teal, #006D77) !important;
+  color: #fff !important;
+  padding: 12px 28px !important;
+  border-radius: 50px !important;
+  font-weight: 700 !important;
+  font-size: .88rem !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+}
+.btn-primary:hover {
+  background: var(--emerald, #00C49A) !important;
+  border-color: var(--emerald, #00C49A) !important;
+  color: #fff !important;
+  transform: translateY(-3px) !important;
+  box-shadow: 0 10px 24px rgba(0,196,154,.35) !important;
+}
+.btn-primary:active { transform: translateY(-1px) !important; }
+
+/* Ghost / outline buttons (View Cart, View Enquiry Cart) */
+.btn-outline-light {
+  border: 2px solid rgba(255,255,255,.65) !important;
+  color: #fff !important;
+  background: transparent !important;
+  padding: 12px 28px !important;
+  border-radius: 50px !important;
+  font-weight: 700 !important;
+  font-size: .88rem !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+}
+.btn-outline-light:hover {
+  background: rgba(255,255,255,.15) !important;
+  border-color: #fff !important;
+  transform: translateY(-3px) !important;
+  box-shadow: 0 8px 20px rgba(0,0,0,.2) !important;
+}
+
+/* Open Enquiry Cart / View Enquiry Cart outline (on white bg) */
+.btn-outline-primary {
+  border: 2px solid var(--teal, #006D77) !important;
+  color: var(--teal, #006D77) !important;
+  background: transparent !important;
+  padding: 12px 28px !important;
+  border-radius: 50px !important;
+  font-weight: 700 !important;
+  font-size: .88rem !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+}
+.btn-outline-primary:hover {
+  background: var(--teal, #006D77) !important;
+  color: #fff !important;
+  transform: translateY(-3px) !important;
+  box-shadow: 0 10px 24px rgba(0,109,119,.3) !important;
+}
+.btn-outline-primary:active { transform: translateY(-1px) !important; }
+
+/* Send Enquiry / Checkout buttons */
+.btn-checkout,
+.btn-submit-inquiry {
+  background: var(--teal, #006D77) !important;
+  border: none !important;
+  border-radius: 50px !important;
+  font-weight: 700 !important;
+  font-size: .88rem !important;
+  letter-spacing: .5px !important;
+}
+.btn-checkout:hover,
+.btn-submit-inquiry:hover {
+  background: var(--emerald, #00C49A) !important;
+  transform: translateY(-3px) !important;
+  box-shadow: 0 10px 24px rgba(0,196,154,.35) !important;
+}
+
+/* Add to Enquiry card button */
+.btn-add-cart {
+  border-radius: 50px !important;
+  font-weight: 700 !important;
+}
+.btn-add-cart:not(.added):hover {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 8px 18px rgba(0,196,154,.3) !important;
+}
+
+/* Open Cart footer button */
+.footer .btn-primary {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+}
+
+/* ── 6. DentalSurgery page — fix "section-title-badge" gold text ── */
+.section-title-badge { color: var(--teal, #006D77) !important; }
+
+/* ── 7. Heritage icon color (about page — was gold) ── */
+.heritage-icon i { color: var(--teal, #006D77) !important; }
+.heritage-hover-card .heritage-icon { color: var(--teal, #006D77) !important; }
+

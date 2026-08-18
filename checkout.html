@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;0,9..40,800;1,9..40,400&display=swap" rel="stylesheet">
+    <meta charset="utf-8">
+    <title>Checkout | ALHAH INDUSTRIES</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <link rel="icon" href="img/logo1.png" type="image/x-icon">
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+    <link href="lib/animate/animate.min.css" rel="stylesheet">
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+
+    <link href="css/style.css" rel="stylesheet">
+    <link href="css/shop-cart.css" rel="stylesheet">
+    <link href="css/colors.css" rel="stylesheet">
+    <link href="css/scroll-animations.css" rel="stylesheet">
+</head>
+
+<body>
+    <!-- ===================== NAVBAR ===================== -->
+    <div class="container-fluid bg-white sticky-top wow fadeIn shadow-sm" data-wow-delay="0.1s">
+        <div class="container">
+            <nav class="navbar navbar-expand-lg bg-white navbar-light p-lg-0">
+                <a href="index.html" class="navbar-brand">
+                    <h1 class="fw-bold m-0" style="font-size:1.3rem;">ALHAH INDUSTRIES</h1>
+                </a>
+                <div class="ms-auto d-flex align-items-center py-2">
+                    <a href="shop.html" class="btn btn-link"><i class="fas fa-arrow-left me-1"></i> Back to Shop</a>
+                </div>
+            </nav>
+        </div>
+    </div>
+
+    <div class="container py-5">
+        <h1 class="display-6 text-uppercase mb-4 text-center">Checkout</h1>
+
+        <div id="checkoutError" class="checkout-error"></div>
+
+        <div class="row g-4 justify-content-center">
+            <div class="col-lg-7">
+                <div class="checkout-panel">
+                    <h6 style="font-size:.72rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#888;margin-bottom:16px;">
+                        <i class="fas fa-truck me-2"></i>Shipping &amp; Contact Details
+                    </h6>
+                    <form id="checkoutForm">
+                        <div class="row g-3">
+                            <div class="col-12">
+                                <div class="checkout-form-group">
+                                    <label>Full Name *</label>
+                                    <input type="text" id="coName" required placeholder="Your full name">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="checkout-form-group">
+                                    <label>Email Address *</label>
+                                    <input type="email" id="coEmail" required placeholder="email@example.com">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="checkout-form-group">
+                                    <label>Phone / WhatsApp</label>
+                                    <input type="tel" id="coPhone" placeholder="+1 555 000 0000">
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="checkout-form-group">
+                                    <label>Shipping Address *</label>
+                                    <input type="text" id="coAddress" required placeholder="Street address">
+                                </div>
+                            </div>
+                            <div class="col-md-5">
+                                <div class="checkout-form-group">
+                                    <label>City *</label>
+                                    <input type="text" id="coCity" required placeholder="City">
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="checkout-form-group">
+                                    <label>Country *</label>
+                                    <input type="text" id="coCountry" required placeholder="Country">
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="checkout-form-group">
+                                    <label>Postal Code</label>
+                                    <input type="text" id="coPostal" placeholder="Postal code">
+                                </div>
+                            </div>
+                        </div>
+                        <button type="submit" id="checkoutPayBtn" class="btn-submit-inquiry mt-3" disabled>
+                            <i class="fas fa-lock me-2"></i>Pay with Payoneer
+                        </button>
+                        <p style="font-size:.72rem;color:#aaa;text-align:center;margin:12px 0 0;">
+                            <i class="fas fa-lock me-1"></i>Your order is created first, then you're redirected to Payoneer to pay securely.
+                        </p>
+                    </form>
+                </div>
+            </div>
+
+            <div class="col-lg-4">
+                <div class="checkout-panel">
+                    <h6 style="font-size:.72rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#888;margin-bottom:16px;">
+                        <i class="fas fa-list me-2"></i>Order Summary
+                    </h6>
+                    <div id="checkoutOrderSummary"></div>
+                    <div id="checkoutOrderTotal"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/config.js"></script>
+    <script src="js/shop-cart.js"></script>
+    <script src="js/checkout.js"></script>
+    <script src="js/scroll-animations.js"></script>
+</body>
+
+</html>
