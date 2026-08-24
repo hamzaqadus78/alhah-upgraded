@@ -104,8 +104,26 @@
     }
   }
 
+  // If logged in, prefill name/email/phone so returning customers don't
+  // have to retype them — guest checkout still works fine if this fails.
+  async function prefillFromAccount() {
+    if (!window.AlhahAuth) return;
+    try {
+      const { user } = await AlhahAuth.me();
+      const nameEl = document.getElementById('coName');
+      const emailEl = document.getElementById('coEmail');
+      const phoneEl = document.getElementById('coPhone');
+      if (nameEl && !nameEl.value) nameEl.value = user.name;
+      if (emailEl && !emailEl.value) emailEl.value = user.email;
+      if (phoneEl && !phoneEl.value && user.phone) phoneEl.value = user.phone;
+    } catch {
+      // not logged in — guest checkout, nothing to prefill
+    }
+  }
+
   document.addEventListener('DOMContentLoaded', () => {
     renderSummary();
+    prefillFromAccount();
     document.getElementById('checkoutForm')?.addEventListener('submit', submitOrder);
   });
 })();

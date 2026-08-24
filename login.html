@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;0,9..40,800;1,9..40,400&display=swap" rel="stylesheet">
+    <meta charset="utf-8">
+    <title>Login | ALHAH INDUSTRIES</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <link rel="icon" href="img/logo1.png" type="image/x-icon">
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+    <link href="lib/animate/animate.min.css" rel="stylesheet">
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+
+    <link href="css/style.css" rel="stylesheet">
+    <link href="css/shop-cart.css" rel="stylesheet">
+    <link href="css/colors.css" rel="stylesheet">
+    <link href="css/scroll-animations.css" rel="stylesheet">
+</head>
+
+<body>
+    <!-- ===================== NAVBAR ===================== -->
+    <div class="container-fluid bg-white sticky-top wow fadeIn shadow-sm" data-wow-delay="0.1s">
+        <div class="container">
+            <nav class="navbar navbar-expand-lg bg-white navbar-light p-lg-0">
+                <a href="index.html" class="navbar-brand">
+                    <h1 class="fw-bold m-0" style="font-size:1.3rem;">ALHAH INDUSTRIES</h1>
+                </a>
+                <div class="ms-auto d-flex align-items-center py-2">
+                    <a href="shop.html" class="btn btn-link"><i class="fas fa-arrow-left me-1"></i> Back to Shop</a>
+                </div>
+            </nav>
+        </div>
+    </div>
+
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-md-6 col-lg-5">
+                <div class="checkout-panel">
+                    <h1 class="display-6 text-uppercase mb-1 text-center" style="font-size:1.8rem;">Log In</h1>
+                    <p class="text-muted text-center mb-4">Welcome back — access your order history and check out faster.</p>
+
+                    <div class="checkout-error" id="loginError"></div>
+
+                    <form id="loginForm">
+                        <div class="mb-3">
+                            <label class="form-label">Email</label>
+                            <input type="email" class="form-control" id="loginEmail" required>
+                        </div>
+                        <div class="mb-4">
+                            <label class="form-label">Password</label>
+                            <input type="password" class="form-control" id="loginPassword" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100 py-3" id="loginBtn">
+                            <i class="fas fa-sign-in-alt me-2"></i>Log In
+                        </button>
+                    </form>
+
+                    <p class="text-center mt-4 mb-0" style="font-size:.9rem;">
+                        Don't have an account? <a href="signup.html">Sign up</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/config.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/login.js"></script>
+</body>
+
+</html>

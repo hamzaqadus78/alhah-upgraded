@@ -7,7 +7,7 @@ const { HttpError } = require('../middleware/errorHandler');
  *
  * @param {{items: {productId: string, qty: number}[], customerName: string, customerEmail: string, customerPhone?: string, shippingAddress: object}} payload
  */
-async function createOrderFromCart(payload) {
+async function createOrderFromCart(payload, userId) {
   const { items, customerName, customerEmail, customerPhone, shippingAddress } = payload;
 
   if (!Array.isArray(items) || items.length === 0) {
@@ -56,6 +56,7 @@ async function createOrderFromCart(payload) {
 
   const order = await prisma.order.create({
     data: {
+      userId: userId || null,
       customerName,
       customerEmail,
       customerPhone,

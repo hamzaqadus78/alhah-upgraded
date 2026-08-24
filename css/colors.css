@@ -481,12 +481,10 @@ a:hover { color: var(--teal-light, #0097A7) !important; }
 .navbar-brand,
 .btn-primary, .btn-primary:hover,
 .cart-nav-btn, .cart-nav-btn:hover,
-.btn-add-cart, .btn-add-cart:hover,
 .footer a.btn,
 .footer .btn.btn-link,
 .carousel-caption a,
-.carousel-caption button,
-.flip-card-back a { color: inherit !important; }
+.carousel-caption button { color: inherit !important; }
 
 /* ── 4. NAVBAR CART BUTTON — icon dark before hover, emerald on hover ── */
 /* The cart button icon should be dark (readable) at rest */
@@ -525,6 +523,19 @@ a:hover { color: var(--teal-light, #0097A7) !important; }
   transition: all .32s cubic-bezier(.4,0,.2,1) !important;
   letter-spacing: .4px !important;
 }
+
+/* .back-to-top also carries .btn-primary (for its color/shape), but it must
+   stay position:fixed to float over content instead of sitting in the page
+   flow — the mixin above would otherwise force it to position:relative. */
+.back-to-top { position: fixed !important; }
+
+/* .back-to-top also carries .btn-lg-square (for its circular shape), whose
+   `display: flex` rule in style.css comes after `.back-to-top`'s own
+   `display: none` in source order and wins the specificity tie — showing
+   the button on page load regardless of scroll position. Not !important:
+   main.js's fadeIn/fadeOut set a plain inline display, which still needs
+   to be able to override this. */
+.back-to-top { display: none; }
 
 /* Explore Range / View Full Catalogue / primary CTA buttons */
 .btn-primary {

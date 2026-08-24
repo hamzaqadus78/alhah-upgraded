@@ -28,6 +28,8 @@ model Product {
 model Order {
   id                String      @id @default(cuid())
   status            OrderStatus @default(PENDING)
+  userId            String?
+  user              User?       @relation(fields: [userId], references: [id])
   customerName      String
   customerEmail     String
   customerPhone     String?
@@ -42,6 +44,26 @@ model Order {
   createdAt         DateTime    @default(now())
   updatedAt         DateTime    @updatedAt
   items             OrderItem[]
+}
+
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String
+  name         String
+  phone        String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  orders       Order[]
+}
+
+model Admin {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String
+  name         String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 }
 
 model OrderItem {

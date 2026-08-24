@@ -1,5 +1,13 @@
 /********** Template CSS **********/
 
+/* On short pages, any leftover space below the footer/copyright shows
+   the browser's default white background. Painting <html> the same
+   near-black as the footer means that leftover space blends in instead
+   of appearing as a stray white gap — without repositioning content
+   (which is fragile: it can clip the copyright bar at the exact
+   viewport edge on some screen sizes). */
+html { background-color: #010E0F; }
+
 /* Change font of ALHAH INDUSTRIES in topbar */
 /* Premium Styled Logo - ALHAH INDUSTRIES */
 

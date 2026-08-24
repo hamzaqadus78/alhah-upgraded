@@ -51,14 +51,23 @@ document.querySelectorAll('.dropdown-item[data-pdf]').forEach(item => {
     
     // Back to top button
     $(window).scroll(function () {
+        // stop(true, true) clears any queued fade before starting the next
+        // one — without it, the rapid scroll events fired during the
+        // smooth-scroll-to-top animation queue up a backlog of fadeIn calls,
+        // and the button stays stuck visible instead of disappearing right
+        // when you reach the top.
         if ($(this).scrollTop() > 300) {
-            $('.back-to-top').fadeIn('slow');
+            $('.back-to-top').stop(true, true).fadeIn('slow');
         } else {
-            $('.back-to-top').fadeOut('slow');
+            $('.back-to-top').stop(true, true).fadeOut('slow');
         }
     });
     $('.back-to-top').click(function () {
-        $('html, body').animate({scrollTop: 0}, 1500, 'easeInOutExpo');
+        // css/scroll-animations.css sets `html { scroll-behavior: smooth }`
+        // globally, which fights jQuery's own animate()-driven scroll and
+        // makes it glitchy — use the native smooth scroll instead so only
+        // one animation system is ever driving the scroll position.
+        window.scrollTo({ top: 0, behavior: 'smooth' });
         return false;
     });
 

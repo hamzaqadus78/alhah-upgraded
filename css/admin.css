@@ -1,0 +1,148 @@
+/* ALHAH INDUSTRIES — Admin dashboard
+   Deliberately plain/internal-tool styling, distinct from the customer
+   site's marketing template — this is a back-office area. */
+
+:root {
+  --admin-teal: #006D77;
+  --admin-emerald: #00C49A;
+  --admin-bg: #f4f6f7;
+  --admin-ink: #1a1a2e;
+  --admin-border: #e2e6e8;
+}
+
+* { box-sizing: border-box; }
+
+body.admin-body {
+  margin: 0;
+  font-family: 'DM Sans', system-ui, -apple-system, sans-serif;
+  background: var(--admin-bg);
+  color: var(--admin-ink);
+}
+
+/* ── Login page ─────────────────────────────────────────────────── */
+.admin-login-wrap {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+.admin-login-card {
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: 0 8px 32px rgba(0,0,0,.08);
+  padding: 40px;
+  width: 100%;
+  max-width: 380px;
+}
+.admin-login-card h1 { font-size: 1.3rem; font-weight: 800; margin-bottom: 4px; }
+.admin-login-card p.sub { color: #777; font-size: .85rem; margin-bottom: 24px; }
+
+/* ── Shared form controls ──────────────────────────────────────── */
+.admin-field { margin-bottom: 16px; }
+.admin-field label { display: block; font-weight: 700; font-size: .82rem; margin-bottom: 6px; color: #444; }
+.admin-field input, .admin-field select, .admin-field textarea {
+  width: 100%; padding: 10px 14px; border: 1.5px solid var(--admin-border);
+  border-radius: 8px; font-size: .9rem; font-family: inherit; outline: none;
+  transition: border-color .2s ease;
+}
+.admin-field input:focus, .admin-field select:focus, .admin-field textarea:focus { border-color: var(--admin-teal); }
+.admin-field small { color: #888; font-size: .75rem; }
+
+.admin-btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: var(--admin-teal); color: #fff; border: none;
+  padding: 10px 22px; border-radius: 8px; font-weight: 700; font-size: .85rem;
+  cursor: pointer; transition: all .2s ease;
+}
+.admin-btn:hover { background: var(--admin-emerald); }
+.admin-btn:disabled { opacity: .6; cursor: not-allowed; }
+.admin-btn-danger { background: #dc2626; }
+.admin-btn-danger:hover { background: #b91c1c; }
+.admin-btn-ghost { background: transparent; color: var(--admin-teal); border: 1.5px solid var(--admin-teal); }
+.admin-btn-ghost:hover { background: var(--admin-teal); color: #fff; }
+.admin-btn-sm { padding: 6px 14px; font-size: .78rem; }
+
+.admin-error {
+  display: none; background: #fef2f2; border: 1px solid #fca5a5; color: #b91c1c;
+  padding: 10px 14px; border-radius: 8px; font-size: .82rem; margin-bottom: 16px;
+}
+.admin-error.show { display: block; }
+
+/* ── Dashboard shell ───────────────────────────────────────────── */
+.admin-topbar {
+  background: #fff; border-bottom: 1px solid var(--admin-border);
+  padding: 14px 28px; display: flex; align-items: center; justify-content: space-between;
+}
+.admin-topbar .brand { font-weight: 800; font-size: 1.05rem; letter-spacing: .3px; }
+.admin-topbar .brand span { color: var(--admin-teal); }
+.admin-topbar .who { font-size: .82rem; color: #777; }
+
+.admin-tabs {
+  display: flex; gap: 4px; background: #fff; padding: 0 28px;
+  border-bottom: 1px solid var(--admin-border);
+}
+.admin-tab {
+  padding: 14px 18px; font-weight: 700; font-size: .85rem; color: #888;
+  cursor: pointer; border-bottom: 3px solid transparent; user-select: none;
+}
+.admin-tab.active { color: var(--admin-teal); border-bottom-color: var(--admin-teal); }
+
+.admin-content { padding: 28px; max-width: 1200px; margin: 0 auto; }
+.admin-panel { display: none; }
+.admin-panel.active { display: block; }
+
+.admin-section-head {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 18px; flex-wrap: wrap; gap: 10px;
+}
+.admin-section-head h2 { font-size: 1.2rem; font-weight: 800; margin: 0; }
+
+.admin-card { background: #fff; border-radius: 12px; padding: 22px; box-shadow: 0 2px 10px rgba(0,0,0,.04); margin-bottom: 20px; }
+
+/* ── Tables ─────────────────────────────────────────────────────── */
+.admin-table-wrap { background: #fff; border-radius: 12px; overflow-x: auto; box-shadow: 0 2px 10px rgba(0,0,0,.04); }
+.admin-table { width: 100%; border-collapse: collapse; font-size: .85rem; }
+.admin-table th {
+  text-align: left; padding: 12px 16px; background: #fafbfb; color: #666;
+  font-weight: 700; font-size: .75rem; text-transform: uppercase; letter-spacing: .4px;
+  border-bottom: 1px solid var(--admin-border); white-space: nowrap;
+}
+.admin-table td { padding: 12px 16px; border-bottom: 1px solid var(--admin-border); vertical-align: middle; }
+.admin-table tr:last-child td { border-bottom: none; }
+.admin-table tr:hover td { background: #fafbfb; }
+
+.admin-badge {
+  display: inline-block; padding: 3px 10px; border-radius: 50px;
+  font-size: .7rem; font-weight: 700; text-transform: uppercase;
+}
+.admin-badge.inactive { background: #f3f4f6; color: #888; }
+.admin-badge.active { background: rgba(0,196,154,.12); color: var(--admin-emerald); }
+.admin-badge.PENDING { background: #f3f4f6; color: #666; }
+.admin-badge.AWAITING_PAYMENT { background: #fef3c7; color: #92400e; }
+.admin-badge.PAID { background: rgba(0,196,154,.12); color: #059669; }
+.admin-badge.FAILED { background: #fef2f2; color: #b91c1c; }
+.admin-badge.CANCELLED { background: #f3f4f6; color: #444; }
+
+.admin-status-select {
+  padding: 4px 8px; border-radius: 6px; border: 1px solid var(--admin-border);
+  font-size: .78rem; font-family: inherit;
+}
+
+/* ── Modal (add/edit product) ──────────────────────────────────── */
+.admin-modal-overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,.45);
+  display: none; align-items: center; justify-content: center; z-index: 1000; padding: 20px;
+}
+.admin-modal-overlay.show { display: flex; }
+.admin-modal {
+  background: #fff; border-radius: 14px; padding: 28px; width: 100%; max-width: 480px;
+  max-height: 90vh; overflow-y: auto;
+}
+.admin-modal h3 { font-size: 1.1rem; font-weight: 800; margin-bottom: 18px; }
+.admin-modal-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px; }
+
+@media (max-width: 700px) {
+  .admin-content { padding: 16px; }
+  .admin-topbar, .admin-tabs { padding-left: 16px; padding-right: 16px; }
+}
