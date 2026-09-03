@@ -62,6 +62,7 @@ async function login(req, res, next) {
     if (!user || !(await verifyPassword(password, user.passwordHash))) {
       throw new HttpError(401, 'Incorrect username or password.');
     }
+    if (!user.active) throw new HttpError(403, 'This account has been deactivated.');
 
     res.cookie(USER_COOKIE, signUserToken(user), cookieOptions);
     res.json({ user: publicUser(user) });
@@ -78,7 +79,7 @@ function logout(req, res) {
 async function me(req, res, next) {
   try {
     const user = await prisma.user.findUnique({ where: { id: req.userId } });
-    if (!user) throw new HttpError(401, 'Not logged in.');
+    if (!user || !user.active) throw new HttpError(401, 'Not logged in.');
     res.json({ user: publicUser(user) });
   } catch (err) {
     next(err);

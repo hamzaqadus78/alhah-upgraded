@@ -48,6 +48,9 @@
     updateOrderStatus: (id, status) => api(`/api/admin/orders/${id}/status`, { method: 'PATCH', body: JSON.stringify({ status }) }),
     listAdmins: () => api('/api/admin/admins'),
     createAdmin: (data) => api('/api/admin/admins', { method: 'POST', body: JSON.stringify(data) }),
+    listUsers: () => api('/api/admin/users'),
+    setUserActive: (id, active) => api(`/api/admin/users/${id}/active`, { method: 'PATCH', body: JSON.stringify({ active }) }),
+    resetUserPassword: (id, newPassword) => api(`/api/admin/users/${id}/password`, { method: 'PATCH', body: JSON.stringify({ newPassword }) }),
     uploadImage: uploadImageFile,
   };
 
@@ -105,6 +108,7 @@
         document.getElementById('adminWho').textContent = `${admin.name} (@${admin.username})`;
         loadProducts();
         loadOrders();
+        loadUsers();
         loadAdmins();
       })
       .catch(() => { window.location.href = 'admin-login.html'; });
@@ -126,6 +130,7 @@
     initProductModal();
     initAdminModal();
     initSettingsModal();
+    initResetPwModal();
   }
 
   // ── Products ────────────────────────────────────────────────────
@@ -280,6 +285,71 @@
           sel.disabled = false;
         }
       }));
+  }
+
+  // ── Users ───────────────────────────────────────────────────────
+  async function loadUsers() {
+    const users = await AlhahAdmin.listUsers();
+    const body = document.getElementById('usersTableBody');
+    body.innerHTML = users.map((u) => `
+      <tr>
+        <td>${u.name}</td>
+        <td>@${u.username}</td>
+        <td>${u.email}</td>
+        <td>${u.phone || '<small style="color:#888;">—</small>'}</td>
+        <td>${u.orderCount}</td>
+        <td>${formatDate(u.createdAt)}</td>
+        <td><span class="admin-badge ${u.active ? 'active' : 'inactive'}">${u.active ? 'Active' : 'Deactivated'}</span></td>
+        <td>
+          <button class="admin-btn admin-btn-ghost admin-btn-sm" data-reset-pw="${u.id}" data-name="${u.name}">Reset Password</button>
+          <button class="admin-btn ${u.active ? 'admin-btn-danger' : ''} admin-btn-sm" data-toggle-active="${u.id}" data-active="${u.active}">${u.active ? 'Deactivate' : 'Reactivate'}</button>
+        </td>
+      </tr>`).join('') || `<tr><td colspan="8" style="text-align:center;color:#888;">No customer accounts yet.</td></tr>`;
+
+    body.querySelectorAll('[data-toggle-active]').forEach((btn) =>
+      btn.addEventListener('click', async () => {
+        const isActive = btn.dataset.active === 'true';
+        const verb = isActive ? 'deactivate' : 'reactivate';
+        if (!confirm(`Are you sure you want to ${verb} this account?`)) return;
+        try {
+          await AlhahAdmin.setUserActive(btn.dataset.toggleActive, !isActive);
+          loadUsers();
+        } catch (err) {
+          alert(`Could not update account: ${err.message}`);
+        }
+      }));
+
+    body.querySelectorAll('[data-reset-pw]').forEach((btn) =>
+      btn.addEventListener('click', () => {
+        showError('resetPwModalError', null);
+        document.getElementById('resetPwForm').reset();
+        document.getElementById('rpUserId').value = btn.dataset.resetPw;
+        document.getElementById('resetPwFor').textContent = `For: ${btn.dataset.name}`;
+        document.getElementById('resetPwModalOverlay').classList.add('show');
+      }));
+  }
+
+  function initResetPwModal() {
+    document.getElementById('resetPwModalCancel').addEventListener('click', () =>
+      document.getElementById('resetPwModalOverlay').classList.remove('show'));
+
+    document.getElementById('resetPwForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      showError('resetPwModalError', null);
+      const btn = document.getElementById('resetPwModalSave');
+      btn.disabled = true;
+      try {
+        await AlhahAdmin.resetUserPassword(
+          document.getElementById('rpUserId').value,
+          document.getElementById('rpNewPassword').value
+        );
+        document.getElementById('resetPwModalOverlay').classList.remove('show');
+      } catch (err) {
+        showError('resetPwModalError', err.message);
+      } finally {
+        btn.disabled = false;
+      }
+    });
   }
 
   // ── Admins ──────────────────────────────────────────────────────

@@ -199,3 +199,22 @@
   background: #fff; border-radius: 14px; padding: 28px;
   box-shadow: 0 4px 24px rgba(0,0,0,.06);
 }
+
+/* checkout.html's <input>/<label> elements carry no Bootstrap .form-control
+   class and had no base styling anywhere — only a font-family override in
+   colors.css — so they rendered as bare unstyled browser form fields. */
+.checkout-form-group { margin-bottom: 4px; }
+.checkout-form-group label {
+  display: block; font-size: .82rem; font-weight: 600; color: #444;
+  margin-bottom: 6px;
+}
+.checkout-form-group input {
+  width: 100%; padding: 12px 16px; border-radius: 10px;
+  border: 1.5px solid #e5e5e5; font-size: .92rem; color: #1a1a2e;
+  outline: none; transition: all .2s ease; background: #fafafa;
+}
+.checkout-form-group input:focus {
+  border-color: var(--shop-teal); background: #fff;
+  box-shadow: 0 0 0 3px rgba(0,109,119,.1);
+}
+.checkout-form-group input::placeholder { color: #aaa; }
