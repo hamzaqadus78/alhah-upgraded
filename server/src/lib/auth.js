@@ -30,10 +30,19 @@ function verifyAdminToken(token) {
   return jwt.verify(token, process.env.ADMIN_JWT_SECRET).sub;
 }
 
+// The site and API live on different subdomains (e.g. alhah-upgraded-1 vs
+// alhah-upgraded.onrender.com), which browsers treat as separate "sites" —
+// SameSite=Lax only survives full page navigations, not the background
+// fetch() calls the dashboard makes right after loading, so it silently
+// dropped the cookie. SameSite=None is required for cross-site fetches to
+// carry cookies, and browsers mandate Secure whenever None is used — safe
+// here since the API is always reached over HTTPS in every environment
+// this runs in (local frontend dev included, since it still calls the
+// HTTPS Render backend).
 const cookieOptions = {
   httpOnly: true,
-  sameSite: 'lax',
-  secure: process.env.NODE_ENV === 'production',
+  sameSite: 'none',
+  secure: true,
   path: '/',
 };
 
