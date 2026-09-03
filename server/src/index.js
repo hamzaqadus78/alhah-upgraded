@@ -16,7 +16,13 @@ const app = express();
 
 // credentials:true is required for the browser to send/receive the
 // httpOnly session cookies cross-origin (API on :3000, site on :8080).
-app.use(cors({ origin: process.env.CORS_ALLOWED_ORIGIN || 'https://alhahindustries.com', credentials: true }));
+// CORS_ALLOWED_ORIGIN can be a comma-separated list — needed so local dev
+// (http://localhost:8080) and the deployed site can both reach this API
+// without having to keep swapping the env var back and forth.
+const allowedOrigins = (process.env.CORS_ALLOWED_ORIGIN || 'https://alhahindustries.com')
+  .split(',')
+  .map((origin) => origin.trim());
+app.use(cors({ origin: allowedOrigins, credentials: true }));
 // Default 100kb limit is too small once a product's `images` array carries
 // base64 data URIs (see admin/upload.controller.js) instead of plain URLs.
 app.use(express.json({ limit: '10mb' }));
