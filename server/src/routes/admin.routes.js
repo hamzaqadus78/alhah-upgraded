@@ -3,7 +3,9 @@ const rateLimit = require('express-rate-limit');
 const authAdmin = require('../controllers/admin/authAdmin.controller');
 const products = require('../controllers/admin/products.controller');
 const orders = require('../controllers/admin/orders.controller');
+const { uploadImage } = require('../controllers/admin/upload.controller');
 const { requireAdmin } = require('../middleware/requireAdmin');
+const { upload } = require('../middleware/upload');
 
 const router = express.Router();
 
@@ -19,6 +21,8 @@ router.use(requireAdmin);
 
 router.get('/admins', authAdmin.listAdmins);
 router.post('/admins', authAdmin.createAdmin);
+
+router.post('/upload', upload.single('image'), uploadImage);
 
 router.get('/products', products.listProducts);
 router.post('/products', products.createProduct);

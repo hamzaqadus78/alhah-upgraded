@@ -19,6 +19,22 @@
     return data;
   }
 
+  // Separate from api() above — this sends multipart/form-data, so it must
+  // NOT set a Content-Type header itself (the browser sets the correct
+  // boundary automatically when the body is a FormData object).
+  async function uploadImageFile(file) {
+    const formData = new FormData();
+    formData.append('image', file);
+    const res = await fetch(`${API_BASE}/api/admin/upload`, {
+      method: 'POST',
+      credentials: 'include',
+      body: formData,
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(data.error || 'Upload failed.');
+    return data;
+  }
+
   const AlhahAdmin = {
     login: (email, password) => api('/api/admin/auth/login', { method: 'POST', body: JSON.stringify({ email, password }) }),
     logout: () => api('/api/admin/auth/logout', { method: 'POST' }),
@@ -31,6 +47,7 @@
     updateOrderStatus: (id, status) => api(`/api/admin/orders/${id}/status`, { method: 'PATCH', body: JSON.stringify({ status }) }),
     listAdmins: () => api('/api/admin/admins'),
     createAdmin: (data) => api('/api/admin/admins', { method: 'POST', body: JSON.stringify(data) }),
+    uploadImage: uploadImageFile,
   };
 
   function formatPrice(cents, currency) {
@@ -148,7 +165,17 @@
     document.getElementById('pfPrice').value = product ? (product.priceCents / 100).toFixed(2) : '';
     document.getElementById('pfStock').value = product?.stock ?? '';
     document.getElementById('pfMoq').value = product?.moq ?? 1;
-    document.getElementById('pfImage').value = product?.images?.[0] || '';
+    document.getElementById('pfImageFile').value = '';
+    document.getElementById('pfImageUrl').value = product?.images?.[0] || '';
+    document.getElementById('pfImageStatus').textContent = '';
+    const preview = document.getElementById('pfImagePreview');
+    const previewWrap = document.getElementById('pfImagePreviewWrap');
+    if (product?.images?.[0]) {
+      preview.src = product.images[0];
+      previewWrap.style.display = '';
+    } else {
+      previewWrap.style.display = 'none';
+    }
     document.getElementById('pfActive').checked = product ? product.active : true;
     // SKU can't change once set (used as the stable product identifier).
     document.getElementById('pfSku').disabled = !!product;
@@ -160,10 +187,32 @@
     document.getElementById('productModalCancel').addEventListener('click', () =>
       document.getElementById('productModalOverlay').classList.remove('show'));
 
+    // Upload immediately on file selection (not on form submit) so the
+    // admin sees the result and gets a clear error before saving the rest
+    // of the form.
+    document.getElementById('pfImageFile').addEventListener('change', async (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      const status = document.getElementById('pfImageStatus');
+      status.textContent = 'Uploading…';
+      try {
+        const { url } = await AlhahAdmin.uploadImage(file);
+        document.getElementById('pfImageUrl').value = url;
+        document.getElementById('pfImagePreview').src = url;
+        document.getElementById('pfImagePreviewWrap').style.display = '';
+        status.textContent = 'Uploaded.';
+      } catch (err) {
+        status.textContent = '';
+        showError('productModalError', err.message);
+        e.target.value = '';
+      }
+    });
+
     document.getElementById('productForm').addEventListener('submit', async (e) => {
       e.preventDefault();
       showError('productModalError', null);
       const id = document.getElementById('pfId').value;
+      const imageUrl = document.getElementById('pfImageUrl').value.trim();
       const payload = {
         name: document.getElementById('pfName').value.trim(),
         category: document.getElementById('pfCategory').value.trim(),
@@ -171,7 +220,7 @@
         priceCents: Math.round(parseFloat(document.getElementById('pfPrice').value) * 100),
         stock: parseInt(document.getElementById('pfStock').value, 10),
         moq: parseInt(document.getElementById('pfMoq').value, 10),
-        images: document.getElementById('pfImage').value.trim() ? [document.getElementById('pfImage').value.trim()] : [],
+        images: imageUrl ? [imageUrl] : [],
         active: document.getElementById('pfActive').checked,
       };
       if (!id) payload.sku = document.getElementById('pfSku').value.trim();

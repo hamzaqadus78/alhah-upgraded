@@ -97,7 +97,15 @@
                     <div class="admin-field" style="flex:1;"><label>Stock</label><input type="number" id="pfStock" min="0" required></div>
                     <div class="admin-field" style="flex:1;"><label>MOQ</label><input type="number" id="pfMoq" min="1" required></div>
                 </div>
-                <div class="admin-field"><label>Image path <span style="font-weight:400;">(e.g. img/Dental3.jpg)</span></label><input type="text" id="pfImage"></div>
+                <div class="admin-field">
+                    <label>Product Image</label>
+                    <input type="file" id="pfImageFile" accept="image/jpeg,image/png,image/webp,image/gif">
+                    <input type="hidden" id="pfImageUrl">
+                    <div id="pfImagePreviewWrap" style="margin-top:10px;display:none;">
+                        <img id="pfImagePreview" src="" alt="Preview" style="width:100px;height:100px;object-fit:cover;border-radius:8px;border:1px solid var(--admin-border);">
+                    </div>
+                    <small id="pfImageStatus"></small>
+                </div>
                 <div class="admin-field">
                     <label style="display:flex;align-items:center;gap:8px;font-weight:400;">
                         <input type="checkbox" id="pfActive" style="width:auto;" checked> Active (visible in shop)
