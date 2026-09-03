@@ -1,26 +1,25 @@
 /**
- * Contact-form email delivery via Gmail SMTP (Nodemailer).
+ * Email delivery via Brevo's HTTP API (not SMTP) — Render's free tier
+ * permanently blocks outbound SMTP ports (25/465/587) as of Sept 2025 to
+ * fight spam abuse, so Gmail SMTP (nodemailer) times out from there
+ * regardless of how correct the credentials are. Brevo sends over normal
+ * HTTPS, which is never blocked.
  *
- * Requires a Gmail App Password (not the account password) — Gmail accounts
- * with 2FA enabled can generate one at https://myaccount.google.com/apppasswords.
- * Set GMAIL_USER / GMAIL_APP_PASSWORD in server/.env. Until both are set,
- * sendContactEmail throws a clear "not configured" error instead of
- * silently failing.
+ * Set BREVO_API_KEY and EMAIL_SENDER in server/.env (EMAIL_SENDER must be
+ * a Brevo-verified sender address). Until both are set, sendContactEmail
+ * throws a clear "not configured" error instead of silently failing.
  */
-const nodemailer = require('nodemailer');
+const { BrevoClient } = require('@getbrevo/brevo');
 
 const configured = () =>
-  !!process.env.GMAIL_USER && !!process.env.GMAIL_APP_PASSWORD;
+  !!process.env.BREVO_API_KEY && !!process.env.EMAIL_SENDER;
 
-let transporter = null;
-function getTransporter() {
-  if (!transporter) {
-    transporter = nodemailer.createTransport({
-      service: 'gmail',
-      auth: { user: process.env.GMAIL_USER, pass: process.env.GMAIL_APP_PASSWORD },
-    });
+let client = null;
+function getClient() {
+  if (!client) {
+    client = new BrevoClient({ apiKey: process.env.BREVO_API_KEY });
   }
-  return transporter;
+  return client;
 }
 
 /**
@@ -29,7 +28,7 @@ function getTransporter() {
 async function sendContactEmail(payload) {
   if (!configured()) {
     const err = new Error(
-      'Contact email is not configured — set GMAIL_USER / GMAIL_APP_PASSWORD in server/.env (see .env.example).'
+      'Contact email is not configured — set BREVO_API_KEY / EMAIL_SENDER in server/.env (see .env.example).'
     );
     err.status = 503;
     err.publicMessage = 'Sorry, the contact form is temporarily unavailable — please email or WhatsApp us directly.';
@@ -37,14 +36,14 @@ async function sendContactEmail(payload) {
   }
 
   const { name, email, phone, subject, message } = payload;
-  const to = process.env.CONTACT_RECEIVER_EMAIL || process.env.GMAIL_USER;
+  const to = process.env.CONTACT_RECEIVER_EMAIL || process.env.EMAIL_SENDER;
 
-  await getTransporter().sendMail({
-    from: `"ALHAH INDUSTRIES Website" <${process.env.GMAIL_USER}>`,
-    to,
-    replyTo: email,
+  await getClient().transactionalEmails.sendTransacEmail({
+    sender: { name: 'ALHAH INDUSTRIES Website', email: process.env.EMAIL_SENDER },
+    to: [{ email: to }],
+    replyTo: { email, name },
     subject: subject ? `[Contact] ${subject}` : `New contact form message from ${name}`,
-    text: [
+    textContent: [
       `Name: ${name}`,
       `Email: ${email}`,
       `Phone: ${phone || 'Not provided'}`,
@@ -64,14 +63,14 @@ async function sendOrderPlacedEmail(order) {
   if (!configured()) return;
 
   const { formatOrderNumber } = require('./../lib/orderNumber');
-  const to = process.env.CONTACT_RECEIVER_EMAIL || process.env.GMAIL_USER;
+  const to = process.env.CONTACT_RECEIVER_EMAIL || process.env.EMAIL_SENDER;
   const total = ((order.totalCents || 0) / 100).toFixed(2);
 
-  await getTransporter().sendMail({
-    from: `"ALHAH INDUSTRIES Website" <${process.env.GMAIL_USER}>`,
-    to,
+  await getClient().transactionalEmails.sendTransacEmail({
+    sender: { name: 'ALHAH INDUSTRIES Website', email: process.env.EMAIL_SENDER },
+    to: [{ email: to }],
     subject: `New order ${formatOrderNumber(order.orderSeq)} — ${order.customerName}`,
-    text: [
+    textContent: [
       `Order: ${formatOrderNumber(order.orderSeq)}`,
       `Customer: ${order.customerName} (${order.customerEmail})`,
       order.customerPhone ? `Phone: ${order.customerPhone}` : null,
