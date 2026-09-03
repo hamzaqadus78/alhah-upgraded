@@ -218,3 +218,15 @@
   box-shadow: 0 0 0 3px rgba(0,109,119,.1);
 }
 .checkout-form-group input::placeholder { color: #aaa; }
+
+/* .btn-submit-inquiry (checkout's "Proceed to Pay") had color/shape
+   patches scattered across colors.css/scroll-animations.css but no base
+   layout anywhere — no padding, no text color, no width, no icon
+   alignment — so it rendered cramped and inconsistent with the site's
+   other pill buttons (compare .btn-shop-checkout above). */
+.btn-submit-inquiry {
+  width: 100%; color: #fff; padding: 14px; font-weight: 700; font-size: .88rem;
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  gap: 9px; letter-spacing: .5px; transition: all .25s ease;
+}
+.btn-submit-inquiry:disabled { opacity: .6; cursor: not-allowed; }
