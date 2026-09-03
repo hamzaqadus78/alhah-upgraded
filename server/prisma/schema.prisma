@@ -26,28 +26,29 @@ model Product {
 }
 
 model Order {
-  id                String      @id @default(cuid())
-  status            OrderStatus @default(PENDING)
-  userId            String?
-  user              User?       @relation(fields: [userId], references: [id])
-  customerName      String
-  customerEmail     String
-  customerPhone     String?
-  shippingAddress   Json
-  currency          String
-  subtotalCents     Int
-  shippingCents     Int         @default(0)
-  totalCents        Int
-  payoneerSessionId String?     @unique
-  payoneerPaymentId String?
-  paidAt            DateTime?
-  createdAt         DateTime    @default(now())
-  updatedAt         DateTime    @updatedAt
-  items             OrderItem[]
+  id              String      @id @default(cuid())
+  orderSeq        Int         @unique @default(autoincrement())
+  status          OrderStatus @default(PENDING)
+  userId          String?
+  user            User?       @relation(fields: [userId], references: [id])
+  guestCode       String?
+  customerName    String
+  customerEmail   String
+  customerPhone   String?
+  shippingAddress Json
+  currency        String
+  subtotalCents   Int
+  shippingCents   Int         @default(0)
+  totalCents      Int
+  paidAt          DateTime?
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+  items           OrderItem[]
 }
 
 model User {
   id           String   @id @default(cuid())
+  username     String   @unique
   email        String   @unique
   passwordHash String
   name         String
@@ -59,6 +60,7 @@ model User {
 
 model Admin {
   id           String   @id @default(cuid())
+  username     String   @unique
   email        String   @unique
   passwordHash String
   name         String

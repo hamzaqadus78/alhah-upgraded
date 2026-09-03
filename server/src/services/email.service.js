@@ -54,4 +54,32 @@ async function sendContactEmail(payload) {
   });
 }
 
-module.exports = { sendContactEmail, configured };
+/**
+ * Notifies the admin (CONTACT_RECEIVER_EMAIL) whenever a new order is
+ * placed. Silently does nothing if email isn't configured yet — checking
+ * the admin dashboard's Orders tab always works regardless, this is just
+ * a convenience on top of that, so it must never block order creation.
+ */
+async function sendOrderPlacedEmail(order) {
+  if (!configured()) return;
+
+  const { formatOrderNumber } = require('./../lib/orderNumber');
+  const to = process.env.CONTACT_RECEIVER_EMAIL || process.env.GMAIL_USER;
+  const total = ((order.totalCents || 0) / 100).toFixed(2);
+
+  await getTransporter().sendMail({
+    from: `"ALHAH INDUSTRIES Website" <${process.env.GMAIL_USER}>`,
+    to,
+    subject: `New order ${formatOrderNumber(order.orderSeq)} — ${order.customerName}`,
+    text: [
+      `Order: ${formatOrderNumber(order.orderSeq)}`,
+      `Customer: ${order.customerName} (${order.customerEmail})`,
+      order.customerPhone ? `Phone: ${order.customerPhone}` : null,
+      `Total: ${order.currency} ${total}`,
+      '',
+      'View and manage this order in the admin dashboard.',
+    ].filter(Boolean).join('\n'),
+  });
+}
+
+module.exports = { sendContactEmail, sendOrderPlacedEmail, configured };

@@ -18,7 +18,7 @@
 
     try {
       await AlhahAuth.login(
-        document.getElementById('loginEmail').value.trim(),
+        document.getElementById('loginUsername').value.trim(),
         document.getElementById('loginPassword').value
       );
       const redirectTo = new URLSearchParams(location.search).get('redirect') || 'account.html';

@@ -1,18 +1,35 @@
 /**
  * checkout.html logic: renders the shop cart's order summary, submits the
- * order to the backend, then requests a Payoneer checkout session.
+ * order to the backend, then goes straight to the confirmation page.
  *
- * Until Payoneer credentials are configured (server/.env), POST
- * /api/checkout/session responds 503 with a friendly message — this is
- * expected in Phase 3/early Phase 4, not a bug (see plan Part C).
+ * There is no payment gateway — orders are created PENDING and the admin
+ * marks them PAID later (after arranging payment directly with the
+ * customer), from the admin dashboard's Orders tab.
  */
 (function () {
   'use strict';
 
   const API_BASE = window.ALHAH_SHOP_CONFIG?.API_BASE || '';
+  const GUEST_CODE_KEY = 'alhah_guest_code';
 
   function formatPrice(cents, currency) {
     return new Intl.NumberFormat('en-US', { style: 'currency', currency: currency || 'USD' }).format((cents || 0) / 100);
+  }
+
+  // Persistent per-browser identifier for guest (not-logged-in) checkouts,
+  // so the admin dashboard can recognize a repeat guest across orders
+  // without requiring an account.
+  function getOrCreateGuestCode() {
+    try {
+      let code = localStorage.getItem(GUEST_CODE_KEY);
+      if (!code) {
+        code = (crypto.randomUUID ? crypto.randomUUID() : `${Date.now()}-${Math.random().toString(36).slice(2)}`);
+        localStorage.setItem(GUEST_CODE_KEY, code);
+      }
+      return code;
+    } catch {
+      return null; // localStorage unavailable (private mode etc.) — fine, just no guest tracking
+    }
   }
 
   function renderSummary() {
@@ -63,7 +80,7 @@
 
     const payBtn = document.getElementById('checkoutPayBtn');
     payBtn.disabled = true;
-    payBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Processing…';
+    payBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Placing order…';
 
     const payload = {
       items: cart.map(i => ({ productId: i.id, qty: i.qty })),
@@ -76,31 +93,25 @@
         country: document.getElementById('coCountry').value.trim(),
         postalCode: document.getElementById('coPostal').value.trim(),
       },
+      guestCode: getOrCreateGuestCode(),
     };
 
     try {
       const orderRes = await fetch(`${API_BASE}/api/orders`, {
         method: 'POST',
+        credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
       });
       const orderData = await orderRes.json();
       if (!orderRes.ok) throw new Error(orderData.error || 'Could not create order.');
 
-      const sessionRes = await fetch(`${API_BASE}/api/checkout/session`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ orderId: orderData.orderId }),
-      });
-      const sessionData = await sessionRes.json();
-      if (!sessionRes.ok) throw new Error(sessionData.error || 'Could not start payment.');
-
       localStorage.removeItem('alhah_shop_cart_v1');
-      window.location.href = sessionData.redirectUrl;
+      window.location.href = `order-confirmation.html?order=${orderData.orderId}`;
     } catch (err) {
       setError(err.message || 'Something went wrong. Please try again.');
       payBtn.disabled = false;
-      payBtn.innerHTML = '<i class="fas fa-lock me-2"></i>Pay with Payoneer';
+      payBtn.innerHTML = '<i class="fas fa-lock me-2"></i>Proceed to Pay';
     }
   }
 

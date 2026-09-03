@@ -21,12 +21,13 @@
   }
 
   const AlhahAuth = {
-    signup: (email, password, name, phone) =>
-      api('/api/auth/signup', { method: 'POST', body: JSON.stringify({ email, password, name, phone }) }),
-    login: (email, password) =>
-      api('/api/auth/login', { method: 'POST', body: JSON.stringify({ email, password }) }),
+    signup: (username, email, password, name, phone) =>
+      api('/api/auth/signup', { method: 'POST', body: JSON.stringify({ username, email, password, name, phone }) }),
+    login: (username, password) =>
+      api('/api/auth/login', { method: 'POST', body: JSON.stringify({ username, password }) }),
     logout: () => api('/api/auth/logout', { method: 'POST' }),
     me: () => api('/api/auth/me'),
+    updateMe: (data) => api('/api/auth/me', { method: 'PATCH', body: JSON.stringify(data) }),
     myOrders: () => api('/api/auth/orders'),
   };
 

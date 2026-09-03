@@ -1,14 +1,16 @@
 const prisma = require('../lib/prisma');
 const { HttpError } = require('../middleware/errorHandler');
+const { formatOrderNumber } = require('../lib/orderNumber');
+const emailService = require('./email.service');
 
 /**
  * Builds an order from a cart payload, re-deriving price/stock from the DB.
  * Client-sent prices are never trusted — only { productId, qty } per line.
  *
- * @param {{items: {productId: string, qty: number}[], customerName: string, customerEmail: string, customerPhone?: string, shippingAddress: object}} payload
+ * @param {{items: {productId: string, qty: number}[], customerName: string, customerEmail: string, customerPhone?: string, shippingAddress: object, guestCode?: string}} payload
  */
 async function createOrderFromCart(payload, userId) {
-  const { items, customerName, customerEmail, customerPhone, shippingAddress } = payload;
+  const { items, customerName, customerEmail, customerPhone, shippingAddress, guestCode } = payload;
 
   if (!Array.isArray(items) || items.length === 0) {
     throw new HttpError(400, 'Cart is empty.');
@@ -54,23 +56,40 @@ async function createOrderFromCart(payload, userId) {
   const shippingCents = 0; // TODO: shipping cost method not yet decided — plan Part B10, item 6.
   const totalCents = subtotalCents + shippingCents;
 
-  const order = await prisma.order.create({
-    data: {
-      userId: userId || null,
-      customerName,
-      customerEmail,
-      customerPhone,
-      shippingAddress,
-      currency,
-      subtotalCents,
-      shippingCents,
-      totalCents,
-      items: { create: orderItemsData },
-    },
-    include: { items: true },
-  });
+  // Order creation and stock decrement happen atomically — there's no
+  // separate payment-confirmation step anymore, so placing the order is
+  // the moment stock gets reserved.
+  const [order] = await prisma.$transaction([
+    prisma.order.create({
+      data: {
+        userId: userId || null,
+        guestCode: userId ? null : (guestCode || null),
+        customerName,
+        customerEmail,
+        customerPhone,
+        shippingAddress,
+        currency,
+        subtotalCents,
+        shippingCents,
+        totalCents,
+        items: { create: orderItemsData },
+      },
+      include: { items: true },
+    }),
+    ...orderItemsData.map((item) =>
+      prisma.product.update({ where: { id: item.productId }, data: { stock: { decrement: item.qty } } })
+    ),
+  ]);
 
-  return order;
+  // Never let a notification-email hiccup fail the order itself — the
+  // order is already safely in the database at this point.
+  try {
+    await emailService.sendOrderPlacedEmail(order);
+  } catch (err) {
+    console.error('Order-placed notification email failed:', err.message);
+  }
+
+  return { ...order, orderNumber: formatOrderNumber(order.orderSeq) };
 }
 
 async function getOrderStatus(orderId) {
@@ -78,6 +97,7 @@ async function getOrderStatus(orderId) {
     where: { id: orderId },
     select: {
       id: true,
+      orderSeq: true,
       status: true,
       currency: true,
       totalCents: true,
@@ -85,7 +105,7 @@ async function getOrderStatus(orderId) {
     },
   });
   if (!order) throw new HttpError(404, 'Order not found.');
-  return order;
+  return { ...order, orderNumber: formatOrderNumber(order.orderSeq) };
 }
 
 module.exports = { createOrderFromCart, getOrderStatus };

@@ -24,7 +24,7 @@
       <div class="checkout-panel mb-3">
         <div class="d-flex justify-content-between align-items-start flex-wrap gap-2">
           <div>
-            <div class="fw-bold">${formatDate(order.createdAt)}</div>
+            <div class="fw-bold">${order.orderNumber} <span class="text-muted fw-normal">— ${formatDate(order.createdAt)}</span></div>
             <div class="text-muted" style="font-size:.85rem;">${itemsList}</div>
           </div>
           <div class="text-end">
@@ -35,6 +35,8 @@
       </div>`;
   }
 
+  let currentUser = null;
+
   async function loadAccount() {
     let user;
     try {
@@ -44,7 +46,9 @@
       return;
     }
 
+    currentUser = user;
     document.getElementById('accName').textContent = user.name;
+    document.getElementById('accUsername').textContent = `@${user.username}`;
     document.getElementById('accEmail').textContent = user.email;
     if (user.phone) {
       document.getElementById('accPhone').textContent = user.phone;
@@ -67,8 +71,56 @@
     }
   }
 
+  function setSettingsError(msg) {
+    const el = document.getElementById('settingsError');
+    if (!el) return;
+    if (!msg) { el.style.display = 'none'; el.textContent = ''; return; }
+    el.textContent = msg;
+    el.style.display = 'block';
+  }
+
+  function initSettings() {
+    const openBtn = document.getElementById('openSettingsBtn');
+    const modalEl = document.getElementById('settingsModal');
+    if (!openBtn || !modalEl) return;
+    const modal = new bootstrap.Modal(modalEl);
+
+    openBtn.addEventListener('click', () => {
+      setSettingsError(null);
+      document.getElementById('settingsForm').reset();
+      document.getElementById('sfUsername').value = currentUser?.username || '';
+      document.getElementById('sfEmail').value = currentUser?.email || '';
+      modal.show();
+    });
+
+    document.getElementById('settingsForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      setSettingsError(null);
+      const btn = document.getElementById('settingsSaveBtn');
+      btn.disabled = true;
+      try {
+        const newPassword = document.getElementById('sfNewPassword').value;
+        const { user } = await AlhahAuth.updateMe({
+          currentPassword: document.getElementById('sfCurrentPassword').value,
+          username: document.getElementById('sfUsername').value.trim(),
+          email: document.getElementById('sfEmail').value.trim(),
+          ...(newPassword ? { newPassword } : {}),
+        });
+        currentUser = user;
+        document.getElementById('accUsername').textContent = `@${user.username}`;
+        document.getElementById('accEmail').textContent = user.email;
+        modal.hide();
+      } catch (err) {
+        setSettingsError(err.message);
+      } finally {
+        btn.disabled = false;
+      }
+    });
+  }
+
   document.addEventListener('DOMContentLoaded', () => {
     loadAccount();
+    initSettings();
     document.getElementById('logoutBtn')?.addEventListener('click', async () => {
       await AlhahAuth.logout();
       window.location.href = 'index.html';

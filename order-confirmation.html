@@ -33,13 +33,10 @@
     </div>
 
     <div class="container py-5" style="max-width:640px;">
-        <div id="confirmDemoBanner" style="display:none;background:#fef3c7;border:1px solid #fcd34d;color:#92400e;padding:10px 16px;border-radius:10px;font-size:.85rem;margin-bottom:20px;text-align:center;">
-            <i class="fas fa-flask me-1"></i> DEMO ORDER — no real payment was processed. This is a test of the shop flow only.
-        </div>
-
         <div class="checkout-panel text-center">
             <i id="confirmIcon" class="fas fa-spinner fa-spin" style="font-size:3rem;"></i>
-            <h2 id="confirmTitle" class="mt-3 mb-2">Checking order…</h2>
+            <h2 id="confirmTitle" class="mt-3 mb-1">Checking order…</h2>
+            <p id="confirmOrderNumber" class="text-muted mb-2" style="font-weight:700;letter-spacing:.5px;"></p>
             <p id="confirmMessage" class="text-muted mb-4">Please wait.</p>
             <div id="confirmSummary" class="text-start"></div>
         </div>

@@ -18,6 +18,7 @@
 
     try {
       await AlhahAuth.signup(
+        document.getElementById('signupUsername').value.trim(),
         document.getElementById('signupEmail').value.trim(),
         document.getElementById('signupPassword').value,
         document.getElementById('signupName').value.trim(),

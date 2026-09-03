@@ -1,5 +1,6 @@
 const prisma = require('../../lib/prisma');
 const { HttpError } = require('../../middleware/errorHandler');
+const { formatOrderNumber } = require('../../lib/orderNumber');
 
 const VALID_STATUSES = ['PENDING', 'AWAITING_PAYMENT', 'PAID', 'FAILED', 'CANCELLED'];
 
@@ -7,9 +8,12 @@ async function listOrders(req, res, next) {
   try {
     const orders = await prisma.order.findMany({
       orderBy: { createdAt: 'desc' },
-      include: { items: { select: { nameSnapshot: true, qty: true, priceCentsSnapshot: true } } },
+      include: {
+        items: { select: { nameSnapshot: true, qty: true, priceCentsSnapshot: true } },
+        user: { select: { username: true, email: true } },
+      },
     });
-    res.json(orders);
+    res.json(orders.map((o) => ({ ...o, orderNumber: formatOrderNumber(o.orderSeq) })));
   } catch (err) {
     next(err);
   }

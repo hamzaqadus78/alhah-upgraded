@@ -9,6 +9,7 @@
     <link rel="icon" href="img/logo1.png" type="image/x-icon">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
     <link href="css/admin.css" rel="stylesheet">
+    <link href="css/password-toggle.css" rel="stylesheet">
 </head>
 
 <body class="admin-body">
@@ -16,6 +17,7 @@
         <div class="brand">ALHAH <span>Admin</span></div>
         <div class="d-flex align-items-center" style="display:flex;align-items:center;gap:16px;">
             <span class="who" id="adminWho"></span>
+            <button class="admin-btn admin-btn-ghost admin-btn-sm" id="adminSettingsBtn"><i class="fas fa-cog"></i> Settings</button>
             <button class="admin-btn admin-btn-ghost admin-btn-sm" id="adminLogoutBtn"><i class="fas fa-sign-out-alt"></i> Log Out</button>
         </div>
     </div>
@@ -55,7 +57,7 @@
                 <table class="admin-table">
                     <thead>
                         <tr>
-                            <th>Date</th><th>Customer</th><th>Items</th><th>Total</th><th>Status</th>
+                            <th>Order #</th><th>Date</th><th>Customer</th><th>Items</th><th>Total</th><th>Status</th>
                         </tr>
                     </thead>
                     <tbody id="ordersTableBody"></tbody>
@@ -72,7 +74,7 @@
             <div class="admin-table-wrap">
                 <table class="admin-table">
                     <thead>
-                        <tr><th>Name</th><th>Email</th><th>Created</th></tr>
+                        <tr><th>Name</th><th>Username</th><th>Email</th><th>Created</th></tr>
                     </thead>
                     <tbody id="adminsTableBody"></tbody>
                 </table>
@@ -126,6 +128,7 @@
             <div class="admin-error" id="adminModalError"></div>
             <form id="adminForm">
                 <div class="admin-field"><label>Name</label><input type="text" id="afName" required></div>
+                <div class="admin-field"><label>Username</label><input type="text" id="afUsername" minlength="3" maxlength="30" required><small>3-30 characters, letters/numbers/. _ - only.</small></div>
                 <div class="admin-field"><label>Email</label><input type="email" id="afEmail" required></div>
                 <div class="admin-field"><label>Password</label><input type="password" id="afPassword" minlength="8" required><small>At least 8 characters.</small></div>
                 <div class="admin-modal-actions">
@@ -136,8 +139,27 @@
         </div>
     </div>
 
+    <!-- ===================== SETTINGS MODAL ===================== -->
+    <div class="admin-modal-overlay" id="settingsModalOverlay">
+        <div class="admin-modal">
+            <h3>Account Settings</h3>
+            <div class="admin-error" id="settingsModalError"></div>
+            <form id="settingsForm">
+                <div class="admin-field"><label>Username</label><input type="text" id="sfUsername" minlength="3" maxlength="30" required></div>
+                <div class="admin-field"><label>Email</label><input type="email" id="sfEmail" required></div>
+                <div class="admin-field"><label>New Password <span style="font-weight:400;">(leave blank to keep current)</span></label><input type="password" id="sfNewPassword" minlength="8"></div>
+                <div class="admin-field"><label>Current Password <span style="font-weight:400;">(required to save any change)</span></label><input type="password" id="sfCurrentPassword" required></div>
+                <div class="admin-modal-actions">
+                    <button type="button" class="admin-btn admin-btn-ghost" id="settingsModalCancel">Cancel</button>
+                    <button type="submit" class="admin-btn" id="settingsModalSave">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <script src="js/config.js"></script>
     <script src="js/admin.js"></script>
+    <script src="js/password-toggle.js"></script>
 </body>
 
 </html>

@@ -36,9 +36,10 @@
   }
 
   const AlhahAdmin = {
-    login: (email, password) => api('/api/admin/auth/login', { method: 'POST', body: JSON.stringify({ email, password }) }),
+    login: (username, password) => api('/api/admin/auth/login', { method: 'POST', body: JSON.stringify({ username, password }) }),
     logout: () => api('/api/admin/auth/logout', { method: 'POST' }),
     me: () => api('/api/admin/auth/me'),
+    updateMe: (data) => api('/api/admin/auth/me', { method: 'PATCH', body: JSON.stringify(data) }),
     listProducts: () => api('/api/admin/products'),
     createProduct: (data) => api('/api/admin/products', { method: 'POST', body: JSON.stringify(data) }),
     updateProduct: (id, data) => api(`/api/admin/products/${id}`, { method: 'PATCH', body: JSON.stringify(data) }),
@@ -76,7 +77,7 @@
       btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Logging in…';
       try {
         await AlhahAdmin.login(
-          document.getElementById('adminEmail').value.trim(),
+          document.getElementById('adminUsername').value.trim(),
           document.getElementById('adminPassword').value
         );
         window.location.href = 'admin-dashboard.html';
@@ -92,13 +93,16 @@
   const STATUS_OPTIONS = ['PENDING', 'AWAITING_PAYMENT', 'PAID', 'FAILED', 'CANCELLED'];
   let allProducts = [];
 
+  let currentAdmin = null;
+
   function initDashboard() {
     const tabs = document.getElementById('panel-products');
     if (!tabs) return;
 
     AlhahAdmin.me()
       .then(({ admin }) => {
-        document.getElementById('adminWho').textContent = `${admin.name} (${admin.email})`;
+        currentAdmin = admin;
+        document.getElementById('adminWho').textContent = `${admin.name} (@${admin.username})`;
         loadProducts();
         loadOrders();
         loadAdmins();
@@ -121,6 +125,7 @@
 
     initProductModal();
     initAdminModal();
+    initSettingsModal();
   }
 
   // ── Products ────────────────────────────────────────────────────
@@ -241,13 +246,20 @@
   }
 
   // ── Orders ──────────────────────────────────────────────────────
+  function orderWho(o) {
+    if (o.user) return `${o.user.username} <small style="color:#888;">(account)</small>`;
+    if (o.guestCode) return `Guest #${o.guestCode.slice(0, 6)}`;
+    return `<small style="color:#888;">Guest</small>`;
+  }
+
   async function loadOrders() {
     const orders = await AlhahAdmin.listOrders();
     const body = document.getElementById('ordersTableBody');
     body.innerHTML = orders.map((o) => `
       <tr>
+        <td><strong>${o.orderNumber}</strong></td>
         <td>${formatDate(o.createdAt)}</td>
-        <td>${o.customerName}<br><small style="color:#888;">${o.customerEmail}</small></td>
+        <td>${o.customerName}<br><small style="color:#888;">${o.customerEmail}</small><br>${orderWho(o)}</td>
         <td>${o.items.map((i) => `${i.nameSnapshot} × ${i.qty}`).join(', ')}</td>
         <td>${formatPrice(o.totalCents, o.currency)}</td>
         <td>
@@ -255,7 +267,7 @@
             ${STATUS_OPTIONS.map((s) => `<option value="${s}" ${s === o.status ? 'selected' : ''}>${s.replace('_', ' ')}</option>`).join('')}
           </select>
         </td>
-      </tr>`).join('') || `<tr><td colspan="5" style="text-align:center;color:#888;">No orders yet.</td></tr>`;
+      </tr>`).join('') || `<tr><td colspan="6" style="text-align:center;color:#888;">No orders yet.</td></tr>`;
 
     body.querySelectorAll('[data-order]').forEach((sel) =>
       sel.addEventListener('change', async () => {
@@ -274,7 +286,7 @@
   async function loadAdmins() {
     const admins = await AlhahAdmin.listAdmins();
     document.getElementById('adminsTableBody').innerHTML = admins.map((a) => `
-      <tr><td>${a.name}</td><td>${a.email}</td><td>${formatDate(a.createdAt)}</td></tr>
+      <tr><td>${a.name}</td><td>@${a.username}</td><td>${a.email}</td><td>${formatDate(a.createdAt)}</td></tr>
     `).join('');
   }
 
@@ -295,6 +307,7 @@
       try {
         await AlhahAdmin.createAdmin({
           name: document.getElementById('afName').value.trim(),
+          username: document.getElementById('afUsername').value.trim(),
           email: document.getElementById('afEmail').value.trim(),
           password: document.getElementById('afPassword').value,
         });
@@ -302,6 +315,45 @@
         loadAdmins();
       } catch (err) {
         showError('adminModalError', err.message);
+      } finally {
+        btn.disabled = false;
+      }
+    });
+  }
+
+  // ── Settings (change my own username/email/password) ────────────
+  function initSettingsModal() {
+    const openBtn = document.getElementById('adminSettingsBtn');
+    if (!openBtn) return;
+
+    openBtn.addEventListener('click', () => {
+      showError('settingsModalError', null);
+      document.getElementById('settingsForm').reset();
+      document.getElementById('sfUsername').value = currentAdmin?.username || '';
+      document.getElementById('sfEmail').value = currentAdmin?.email || '';
+      document.getElementById('settingsModalOverlay').classList.add('show');
+    });
+    document.getElementById('settingsModalCancel').addEventListener('click', () =>
+      document.getElementById('settingsModalOverlay').classList.remove('show'));
+
+    document.getElementById('settingsForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      showError('settingsModalError', null);
+      const btn = document.getElementById('settingsModalSave');
+      btn.disabled = true;
+      try {
+        const newPassword = document.getElementById('sfNewPassword').value;
+        const { admin } = await AlhahAdmin.updateMe({
+          currentPassword: document.getElementById('sfCurrentPassword').value,
+          username: document.getElementById('sfUsername').value.trim(),
+          email: document.getElementById('sfEmail').value.trim(),
+          ...(newPassword ? { newPassword } : {}),
+        });
+        currentAdmin = admin;
+        document.getElementById('adminWho').textContent = `${admin.name} (@${admin.username})`;
+        document.getElementById('settingsModalOverlay').classList.remove('show');
+      } catch (err) {
+        showError('settingsModalError', err.message);
       } finally {
         btn.disabled = false;
       }

@@ -15,6 +15,7 @@ const loginLimiter = rateLimit({ windowMs: 15 * 60 * 1000, max: 10, standardHead
 router.post('/auth/login', loginLimiter, authAdmin.login);
 router.post('/auth/logout', authAdmin.logout);
 router.get('/auth/me', requireAdmin, authAdmin.me);
+router.patch('/auth/me', requireAdmin, authAdmin.updateMe);
 
 // Everything below requires an authenticated admin session.
 router.use(requireAdmin);

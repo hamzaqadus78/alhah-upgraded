@@ -6,8 +6,6 @@ const { errorHandler } = require('./middleware/errorHandler');
 
 const productsRoutes = require('./routes/products.routes');
 const ordersRoutes = require('./routes/orders.routes');
-const checkoutRoutes = require('./routes/checkout.routes');
-const webhooksRoutes = require('./routes/webhooks.routes');
 const contactRoutes = require('./routes/contact.routes');
 const authRoutes = require('./routes/auth.routes');
 const adminRoutes = require('./routes/admin.routes');
@@ -32,8 +30,6 @@ app.get('/health', (req, res) => res.json({ ok: true }));
 
 app.use('/api/products', productsRoutes);
 app.use('/api/orders', ordersRoutes);
-app.use('/api/checkout', checkoutRoutes);
-app.use('/api/webhooks', webhooksRoutes);
 app.use('/api/contact', contactRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/admin', adminRoutes);

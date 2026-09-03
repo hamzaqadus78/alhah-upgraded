@@ -1,7 +1,7 @@
 {
   "name": "alhah-shop-api",
   "version": "1.0.0",
-  "description": "ALHAH INDUSTRIES shop backend — products, orders, checkout, Payoneer webhook",
+  "description": "ALHAH INDUSTRIES shop backend — products, orders, checkout, accounts, admin dashboard",
   "private": true,
   "main": "src/index.js",
   "scripts": {
