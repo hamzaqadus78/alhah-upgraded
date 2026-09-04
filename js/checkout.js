@@ -106,8 +106,16 @@
       const orderData = await orderRes.json();
       if (!orderRes.ok) throw new Error(orderData.error || 'Could not create order.');
 
-      localStorage.removeItem('alhah_shop_cart_v1');
-      window.location.href = `order-confirmation.html?order=${orderData.orderId}`;
+      // Nothing is saved yet — the order is only created once the customer
+      // clicks the emailed confirmation link (checkout-confirm.html) and
+      // explicitly confirms. The cart stays intact until then, in case
+      // they need to come back and retry.
+      document.getElementById('checkoutForm').style.display = 'none';
+      const pending = document.getElementById('checkoutPendingVerification');
+      if (pending) {
+        pending.querySelector('[data-email]').textContent = orderData.email;
+        pending.style.display = '';
+      }
     } catch (err) {
       setError(err.message || 'Something went wrong. Please try again.');
       payBtn.disabled = false;

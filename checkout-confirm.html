@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;0,9..40,800;1,9..40,400&display=swap" rel="stylesheet">
+    <meta charset="utf-8">
+    <title>Confirm Your Order | ALHAH INDUSTRIES</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <link rel="icon" href="img/logo1.png" type="image/x-icon">
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+    <link href="css/shop-cart.css" rel="stylesheet">
+    <link href="css/colors.css" rel="stylesheet">
+    <link href="css/scroll-animations.css" rel="stylesheet">
+</head>
+
+<body>
+    <div class="container-fluid bg-white sticky-top shadow-sm">
+        <div class="container">
+            <nav class="navbar navbar-expand-lg bg-white navbar-light p-lg-0">
+                <a href="index.html" class="navbar-brand">
+                    <h1 class="fw-bold m-0" style="font-size:1.3rem;">ALHAH INDUSTRIES</h1>
+                </a>
+            </nav>
+        </div>
+    </div>
+
+    <div class="container py-5" style="max-width:640px;">
+        <h1 class="display-6 text-uppercase mb-4 text-center">Confirm Your Order</h1>
+
+        <div id="confirmError" class="checkout-error"></div>
+
+        <div id="confirmLoading" class="checkout-panel text-center">
+            <i class="fas fa-spinner fa-spin" style="font-size:2rem;"></i>
+            <p class="text-muted mt-3 mb-0">Loading your order details…</p>
+        </div>
+
+        <div id="confirmContent" style="display:none;">
+            <div class="checkout-panel mb-3">
+                <h6 style="font-size:.72rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#888;margin-bottom:16px;">
+                    <i class="fas fa-list me-2"></i>Order Summary
+                </h6>
+                <div id="confirmSummary"></div>
+            </div>
+            <div class="checkout-panel mb-3">
+                <h6 style="font-size:.72rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#888;margin-bottom:16px;">
+                    <i class="fas fa-truck me-2"></i>Shipping To
+                </h6>
+                <div id="confirmShipping" class="text-muted" style="font-size:.9rem;"></div>
+            </div>
+            <button id="confirmBtn" class="btn-submit-inquiry">
+                <i class="fas fa-check-circle me-2"></i>Confirm My Order
+            </button>
+            <p style="font-size:.72rem;color:#aaa;text-align:center;margin:12px 0 0;">
+                Placing this order reserves the stock — please only confirm once.
+            </p>
+        </div>
+    </div>
+
+    <script src="js/config.js"></script>
+    <script src="js/checkout-confirm.js"></script>
+</body>
+
+</html>

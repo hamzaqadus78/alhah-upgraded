@@ -6,9 +6,12 @@ const {
   hashPassword,
   verifyPassword,
   signUserToken,
+  signEmailVerifyToken,
+  verifyEmailVerifyToken,
 } = require('../lib/auth');
 const { formatOrderNumber } = require('../lib/orderNumber');
 const { isValidEmail } = require('../lib/validateEmail');
+const emailService = require('../services/email.service');
 
 const USERNAME_RE = /^[a-zA-Z0-9_.-]{3,30}$/;
 
@@ -46,8 +49,21 @@ async function signup(req, res, next) {
       },
     });
 
-    res.cookie(USER_COOKIE, signUserToken(user), cookieOptions);
-    res.status(201).json({ user: publicUser(user) });
+    // Not logged in yet — login is blocked until the email link is
+    // clicked (see login() below and verifyEmail()). If sending the
+    // email fails, roll back the account rather than leaving a
+    // permanently-unverifiable row that blocks this username/email
+    // from ever signing up successfully.
+    try {
+      const token = signEmailVerifyToken(user.id);
+      const link = `${process.env.FRONTEND_BASE}/verify-email.html?token=${token}`;
+      await emailService.sendSignupVerificationEmail(user.email, user.name, link);
+    } catch (emailErr) {
+      await prisma.user.delete({ where: { id: user.id } });
+      throw emailErr;
+    }
+
+    res.status(201).json({ pendingVerification: true, email: user.email });
   } catch (err) {
     next(err);
   }
@@ -63,10 +79,36 @@ async function login(req, res, next) {
       throw new HttpError(401, 'Incorrect username or password.');
     }
     if (!user.active) throw new HttpError(403, 'This account has been deactivated.');
+    if (!user.emailVerified) throw new HttpError(403, 'Please verify your email before logging in — check your inbox for the confirmation link.');
 
     res.cookie(USER_COOKIE, signUserToken(user), cookieOptions);
     res.json({ user: publicUser(user) });
   } catch (err) {
+    next(err);
+  }
+}
+
+async function verifyEmail(req, res, next) {
+  try {
+    const { token } = req.body || {};
+    if (!token) throw new HttpError(400, 'Verification token is required.');
+
+    let userId;
+    try {
+      userId = verifyEmailVerifyToken(token);
+    } catch {
+      throw new HttpError(400, 'This verification link is invalid or has expired.');
+    }
+
+    const user = await prisma.user.update({ where: { id: userId }, data: { emailVerified: true } });
+
+    // Low-risk to auto-login here (unlike checkout confirmation) — email
+    // clients prefetching this link just verifies a moment early, no
+    // real-world consequence like a stock-decrementing order.
+    res.cookie(USER_COOKIE, signUserToken(user), cookieOptions);
+    res.json({ user: publicUser(user) });
+  } catch (err) {
+    if (err.code === 'P2025') return next(new HttpError(400, 'This verification link is invalid or has expired.'));
     next(err);
   }
 }
@@ -143,4 +185,4 @@ async function myOrders(req, res, next) {
   }
 }
 
-module.exports = { signup, login, logout, me, updateMe, myOrders };
+module.exports = { signup, login, verifyEmail, logout, me, updateMe, myOrders };

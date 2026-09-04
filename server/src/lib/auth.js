@@ -30,6 +30,32 @@ function verifyAdminToken(token) {
   return jwt.verify(token, process.env.ADMIN_JWT_SECRET).sub;
 }
 
+// Verification links (signup email confirm, checkout order confirm) use a
+// separate secret from session cookies — a verification token must never
+// be usable as a session token or vice versa, even if one leaked.
+function signEmailVerifyToken(userId) {
+  return jwt.sign({ purpose: 'verify-signup', sub: userId }, process.env.EMAIL_VERIFY_SECRET, { expiresIn: '24h' });
+}
+
+function verifyEmailVerifyToken(token) {
+  const decoded = jwt.verify(token, process.env.EMAIL_VERIFY_SECRET);
+  if (decoded.purpose !== 'verify-signup') throw new Error('Wrong token purpose.');
+  return decoded.sub;
+}
+
+// Checkout confirmation carries the whole cart/customer payload in the
+// token itself (rather than a database row) so nothing is persisted until
+// the customer actually confirms — see order.service.js's beginCheckout.
+function signCheckoutToken(payload, userId) {
+  return jwt.sign({ purpose: 'verify-checkout', payload, userId: userId || null }, process.env.EMAIL_VERIFY_SECRET, { expiresIn: '30m' });
+}
+
+function verifyCheckoutToken(token) {
+  const decoded = jwt.verify(token, process.env.EMAIL_VERIFY_SECRET);
+  if (decoded.purpose !== 'verify-checkout') throw new Error('Wrong token purpose.');
+  return { payload: decoded.payload, userId: decoded.userId };
+}
+
 // The site and API live on different subdomains (e.g. alhah-upgraded-1 vs
 // alhah-upgraded.onrender.com), which browsers treat as separate "sites" —
 // SameSite=Lax only survives full page navigations, not the background
@@ -56,4 +82,8 @@ module.exports = {
   verifyUserToken,
   signAdminToken,
   verifyAdminToken,
+  signEmailVerifyToken,
+  verifyEmailVerifyToken,
+  signCheckoutToken,
+  verifyCheckoutToken,
 };

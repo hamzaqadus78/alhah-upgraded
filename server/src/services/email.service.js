@@ -81,4 +81,75 @@ async function sendOrderPlacedEmail(order) {
   });
 }
 
-module.exports = { sendContactEmail, sendOrderPlacedEmail, configured };
+/**
+ * Signup email verification — account exists but can't log in until this
+ * link is clicked (see auth.controller.js). Not wrapped in a configured()
+ * silent-skip like the notification emails below, since without this the
+ * account would be permanently unusable — signup itself must fail loudly
+ * if email isn't configured, same as the contact form.
+ */
+async function sendSignupVerificationEmail(to, name, link) {
+  if (!configured()) {
+    const err = new Error('Email is not configured — set BREVO_API_KEY / EMAIL_SENDER in server/.env.');
+    err.status = 503;
+    err.publicMessage = 'Sorry, account signup is temporarily unavailable — please try again later or contact us directly.';
+    throw err;
+  }
+
+  await getClient().transactionalEmails.sendTransacEmail({
+    sender: { name: 'ALHAH INDUSTRIES', email: process.env.EMAIL_SENDER },
+    to: [{ email: to, name }],
+    subject: 'Confirm your email — ALHAH INDUSTRIES',
+    textContent: [
+      `Hi ${name},`,
+      '',
+      'Click the link below to confirm your email and activate your account:',
+      link,
+      '',
+      "If you didn't create this account, you can ignore this email.",
+      'This link expires in 24 hours.',
+    ].join('\n'),
+  });
+}
+
+/**
+ * Checkout order confirmation — nothing is saved to the database until
+ * this link is clicked and confirmed (see order.service.js's
+ * beginCheckout). Same reasoning as above: must fail loudly, not silently
+ * skip, since without it the customer would have no way to complete
+ * their order at all.
+ */
+async function sendCheckoutVerificationEmail(to, name, link, itemsSummary) {
+  if (!configured()) {
+    const err = new Error('Email is not configured — set BREVO_API_KEY / EMAIL_SENDER in server/.env.');
+    err.status = 503;
+    err.publicMessage = 'Sorry, checkout is temporarily unavailable — please try again later or contact us directly.';
+    throw err;
+  }
+
+  await getClient().transactionalEmails.sendTransacEmail({
+    sender: { name: 'ALHAH INDUSTRIES', email: process.env.EMAIL_SENDER },
+    to: [{ email: to, name }],
+    subject: 'Confirm your order — ALHAH INDUSTRIES',
+    textContent: [
+      `Hi ${name},`,
+      '',
+      'Please confirm your order:',
+      itemsSummary,
+      '',
+      'Click the link below to confirm and complete your order:',
+      link,
+      '',
+      "If you didn't request this, you can safely ignore this email — nothing has been ordered yet.",
+      'This link expires in 30 minutes.',
+    ].join('\n'),
+  });
+}
+
+module.exports = {
+  sendContactEmail,
+  sendOrderPlacedEmail,
+  sendSignupVerificationEmail,
+  sendCheckoutVerificationEmail,
+  configured,
+};
