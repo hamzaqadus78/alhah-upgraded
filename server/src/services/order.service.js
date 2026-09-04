@@ -2,8 +2,7 @@ const prisma = require('../lib/prisma');
 const { HttpError } = require('../middleware/errorHandler');
 const { formatOrderNumber } = require('../lib/orderNumber');
 const emailService = require('./email.service');
-
-const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const { isValidEmail } = require('../lib/validateEmail');
 
 /**
  * Builds an order from a cart payload, re-deriving price/stock from the DB.
@@ -19,8 +18,8 @@ async function createOrderFromCart(payload, userId) {
   }
   // The client's `required` attributes can be bypassed by calling the API
   // directly, so these must be enforced here too, not just in the form.
-  if (!customerEmail || !EMAIL_RE.test(customerEmail)) {
-    throw new HttpError(400, 'A valid email address is required.');
+  if (!customerEmail || !(await isValidEmail(customerEmail))) {
+    throw new HttpError(400, "That email address doesn't look valid — please double-check it.");
   }
   if (!customerPhone || !customerPhone.trim()) {
     throw new HttpError(400, 'A phone number is required.');

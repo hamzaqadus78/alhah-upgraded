@@ -8,8 +8,8 @@ const {
   signUserToken,
 } = require('../lib/auth');
 const { formatOrderNumber } = require('../lib/orderNumber');
+const { isValidEmail } = require('../lib/validateEmail');
 
-const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const USERNAME_RE = /^[a-zA-Z0-9_.-]{3,30}$/;
 
 function publicUser(user) {
@@ -22,7 +22,7 @@ async function signup(req, res, next) {
     if (!username || !USERNAME_RE.test(username)) {
       throw new HttpError(400, 'Username must be 3-30 characters (letters, numbers, . _ - only).');
     }
-    if (!email || !EMAIL_RE.test(email)) throw new HttpError(400, 'A valid email is required.');
+    if (!email || !(await isValidEmail(email))) throw new HttpError(400, "That email address doesn't look valid — please double-check it.");
     if (!password || password.length < 8) throw new HttpError(400, 'Password must be at least 8 characters.');
     if (!name || !name.trim()) throw new HttpError(400, 'Name is required.');
 
@@ -110,7 +110,7 @@ async function updateMe(req, res, next) {
       }
     }
     if (email !== undefined) {
-      if (!EMAIL_RE.test(email)) throw new HttpError(400, 'A valid email is required.');
+      if (!(await isValidEmail(email))) throw new HttpError(400, "That email address doesn't look valid — please double-check it.");
       const normalized = email.toLowerCase();
       if (normalized !== user.email) {
         const taken = await prisma.user.findUnique({ where: { email: normalized } });
