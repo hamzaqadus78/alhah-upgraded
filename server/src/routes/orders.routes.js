@@ -5,7 +5,7 @@ const { optionalUser } = require('../middleware/optionalUser');
 
 const router = express.Router();
 
-router.post('/', optionalUser, requireFields(['items', 'customerName', 'customerEmail', 'shippingAddress']), createOrder);
+router.post('/', optionalUser, requireFields(['items', 'customerName', 'customerEmail', 'customerPhone', 'shippingAddress']), createOrder);
 router.get('/:id/status', getOrderStatus);
 
 module.exports = router;

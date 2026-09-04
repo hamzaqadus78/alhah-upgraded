@@ -3,17 +3,27 @@ const { HttpError } = require('../middleware/errorHandler');
 const { formatOrderNumber } = require('../lib/orderNumber');
 const emailService = require('./email.service');
 
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
 /**
  * Builds an order from a cart payload, re-deriving price/stock from the DB.
  * Client-sent prices are never trusted — only { productId, qty } per line.
  *
- * @param {{items: {productId: string, qty: number}[], customerName: string, customerEmail: string, customerPhone?: string, shippingAddress: object, guestCode?: string}} payload
+ * @param {{items: {productId: string, qty: number}[], customerName: string, customerEmail: string, customerPhone: string, shippingAddress: object, guestCode?: string}} payload
  */
 async function createOrderFromCart(payload, userId) {
   const { items, customerName, customerEmail, customerPhone, shippingAddress, guestCode } = payload;
 
   if (!Array.isArray(items) || items.length === 0) {
     throw new HttpError(400, 'Cart is empty.');
+  }
+  // The client's `required` attributes can be bypassed by calling the API
+  // directly, so these must be enforced here too, not just in the form.
+  if (!customerEmail || !EMAIL_RE.test(customerEmail)) {
+    throw new HttpError(400, 'A valid email address is required.');
+  }
+  if (!customerPhone || !customerPhone.trim()) {
+    throw new HttpError(400, 'A phone number is required.');
   }
 
   const productIds = items.map((i) => i.productId);
