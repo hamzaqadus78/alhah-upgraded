@@ -100,6 +100,16 @@ async function sendSignupVerificationEmail(to, name, link) {
     sender: { name: 'ALHAH INDUSTRIES', email: process.env.EMAIL_SENDER },
     to: [{ email: to, name }],
     subject: 'Confirm your email — ALHAH INDUSTRIES',
+    // htmlContent (with a real <a href> button) is required, not just
+    // textContent — plain-text emails get word-wrapped by mail clients,
+    // which can split this long token-bearing link across two lines and
+    // send the customer to a broken/truncated URL when clicked.
+    htmlContent: `
+      <p>Hi ${name},</p>
+      <p>Click the button below to confirm your email and activate your account:</p>
+      <p><a href="${link}" style="display:inline-block;background:#006D77;color:#fff;padding:12px 28px;border-radius:50px;text-decoration:none;font-weight:bold;">Confirm My Email</a></p>
+      <p style="color:#888;font-size:.85em;">If the button doesn't work, copy and paste this link into your browser:<br>${link}</p>
+      <p style="color:#888;font-size:.85em;">If you didn't create this account, you can ignore this email. This link expires in 24 hours.</p>`,
     textContent: [
       `Hi ${name},`,
       '',
@@ -131,6 +141,16 @@ async function sendCheckoutVerificationEmail(to, name, link, itemsSummary) {
     sender: { name: 'ALHAH INDUSTRIES', email: process.env.EMAIL_SENDER },
     to: [{ email: to, name }],
     subject: 'Confirm your order — ALHAH INDUSTRIES',
+    // htmlContent (with a real <a href> button), not just textContent —
+    // see sendSignupVerificationEmail for why: plain-text word-wrapping
+    // can split this long token-bearing link and break it when clicked.
+    htmlContent: `
+      <p>Hi ${name},</p>
+      <p>Please confirm your order:</p>
+      <pre style="font-family:inherit;">${itemsSummary}</pre>
+      <p><a href="${link}" style="display:inline-block;background:#006D77;color:#fff;padding:12px 28px;border-radius:50px;text-decoration:none;font-weight:bold;">Confirm My Order</a></p>
+      <p style="color:#888;font-size:.85em;">If the button doesn't work, copy and paste this link into your browser:<br>${link}</p>
+      <p style="color:#888;font-size:.85em;">If you didn't request this, you can safely ignore this email — nothing has been ordered yet. This link expires in 30 minutes.</p>`,
     textContent: [
       `Hi ${name},`,
       '',
