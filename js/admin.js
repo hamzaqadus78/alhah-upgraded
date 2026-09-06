@@ -51,6 +51,7 @@
     listUsers: () => api('/api/admin/users'),
     setUserActive: (id, active) => api(`/api/admin/users/${id}/active`, { method: 'PATCH', body: JSON.stringify({ active }) }),
     resetUserPassword: (id, newPassword) => api(`/api/admin/users/${id}/password`, { method: 'PATCH', body: JSON.stringify({ newPassword }) }),
+    deleteUser: (id) => api(`/api/admin/users/${id}`, { method: 'DELETE' }),
     uploadImage: uploadImageFile,
   };
 
@@ -303,6 +304,7 @@
         <td>
           <button class="admin-btn admin-btn-ghost admin-btn-sm" data-reset-pw="${u.id}" data-name="${u.name}">Reset Password</button>
           <button class="admin-btn ${u.active ? 'admin-btn-danger' : ''} admin-btn-sm" data-toggle-active="${u.id}" data-active="${u.active}">${u.active ? 'Deactivate' : 'Reactivate'}</button>
+          <button class="admin-btn admin-btn-danger admin-btn-sm" data-delete-user="${u.id}" data-username="${u.username}">Delete</button>
         </td>
       </tr>`).join('') || `<tr><td colspan="8" style="text-align:center;color:#888;">No customer accounts yet.</td></tr>`;
 
@@ -326,6 +328,25 @@
         document.getElementById('rpUserId').value = btn.dataset.resetPw;
         document.getElementById('resetPwFor').textContent = `For: ${btn.dataset.name}`;
         document.getElementById('resetPwModalOverlay').classList.add('show');
+      }));
+
+    // Permanent and cannot be undone — require typing the username to
+    // confirm, not just a plain OK/Cancel dialog (their orders are kept,
+    // just unlinked from the account, but the account itself is gone).
+    body.querySelectorAll('[data-delete-user]').forEach((btn) =>
+      btn.addEventListener('click', async () => {
+        const username = btn.dataset.username;
+        const typed = prompt(`This permanently deletes the account "${username}". Their past orders are kept but unlinked. This cannot be undone.\n\nType the username to confirm:`);
+        if (typed !== username) {
+          if (typed !== null) alert('Username did not match — nothing was deleted.');
+          return;
+        }
+        try {
+          await AlhahAdmin.deleteUser(btn.dataset.deleteUser);
+          loadUsers();
+        } catch (err) {
+          alert(`Could not delete account: ${err.message}`);
+        }
       }));
   }
 

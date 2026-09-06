@@ -37,5 +37,6 @@ router.patch('/orders/:id/status', orders.updateOrderStatus);
 router.get('/users', users.listUsers);
 router.patch('/users/:id/active', users.setUserActive);
 router.patch('/users/:id/password', users.resetUserPassword);
+router.delete('/users/:id', users.deleteUser);
 
 module.exports = router;

@@ -30,7 +30,10 @@ model Order {
   orderSeq        Int         @unique @default(autoincrement())
   status          OrderStatus @default(PENDING)
   userId          String?
-  user            User?       @relation(fields: [userId], references: [id])
+  // SetNull: deleting a User account must not touch their order history —
+  // sales records stay intact, just no longer tied to a live account
+  // (functionally identical to a guest order from that point on).
+  user            User?       @relation(fields: [userId], references: [id], onDelete: SetNull)
   guestCode       String?
   customerName    String
   customerEmail   String

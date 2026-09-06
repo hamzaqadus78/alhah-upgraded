@@ -17,9 +17,8 @@ async function listUsers(req, res, next) {
   }
 }
 
-// Soft-delete only — deactivating blocks login but keeps their order
-// history intact (a real delete would break the Order.userId foreign key
-// for any past orders, and orders must keep working regardless).
+// Soft — reversible, blocks login without touching the account or its
+// order history. Use deleteUser below for permanent removal.
 async function setUserActive(req, res, next) {
   try {
     const { active } = req.body || {};
@@ -47,4 +46,18 @@ async function resetUserPassword(req, res, next) {
   }
 }
 
-module.exports = { listUsers, setUserActive, resetUserPassword };
+// Permanent — cannot be undone. The Order.user relation is onDelete:
+// SetNull (schema.prisma), so their past orders are kept intact and just
+// become unlinked (functionally identical to a guest order from then on)
+// rather than failing or being cascade-deleted.
+async function deleteUser(req, res, next) {
+  try {
+    await prisma.user.delete({ where: { id: req.params.id } });
+    res.json({ ok: true });
+  } catch (err) {
+    if (err.code === 'P2025') return next(new HttpError(404, 'User not found.'));
+    next(err);
+  }
+}
+
+module.exports = { listUsers, setUserActive, resetUserPassword, deleteUser };
