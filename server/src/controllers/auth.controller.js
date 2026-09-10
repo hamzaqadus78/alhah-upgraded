@@ -113,6 +113,30 @@ async function verifyEmail(req, res, next) {
   }
 }
 
+// Lets someone stuck with an old/broken/expired verification link get a
+// fresh one, without needing a signup retry (which would fail on the
+// unique username/email constraint) or developer help.
+async function resendVerification(req, res, next) {
+  try {
+    const { email, username } = req.body || {};
+    if (!email && !username) throw new HttpError(400, 'Email or username is required.');
+
+    const user = email
+      ? await prisma.user.findUnique({ where: { email: email.toLowerCase() } })
+      : await prisma.user.findUnique({ where: { username: username.trim().toLowerCase() } });
+    // Same response whether or not the account exists / is already
+    // verified — avoids leaking which emails have accounts.
+    if (user && !user.emailVerified) {
+      const token = signEmailVerifyToken(user.id);
+      const link = `${process.env.FRONTEND_BASE}/verify-email.html?token=${token}`;
+      await emailService.sendSignupVerificationEmail(user.email, user.name, link);
+    }
+    res.json({ ok: true });
+  } catch (err) {
+    next(err);
+  }
+}
+
 function logout(req, res) {
   res.clearCookie(USER_COOKIE, cookieOptions);
   res.json({ ok: true });
@@ -185,4 +209,4 @@ async function myOrders(req, res, next) {
   }
 }
 
-module.exports = { signup, login, verifyEmail, logout, me, updateMe, myOrders };
+module.exports = { signup, login, verifyEmail, resendVerification, logout, me, updateMe, myOrders };

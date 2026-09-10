@@ -28,6 +28,7 @@
       const pending = document.getElementById('signupPendingVerification');
       if (pending) {
         pending.querySelector('[data-email]').textContent = email;
+        pending.dataset.email = email;
         pending.style.display = '';
       }
     } catch (err) {
@@ -37,7 +38,24 @@
     }
   }
 
+  async function resendVerification(e) {
+    e.preventDefault();
+    const pending = document.getElementById('signupPendingVerification');
+    const status = document.getElementById('resendVerificationStatus');
+    const email = pending?.dataset.email;
+    if (!email) return;
+    status.style.display = 'block';
+    status.textContent = 'Sending…';
+    try {
+      await AlhahAuth.resendVerification(email);
+      status.textContent = 'A new confirmation link is on its way — check your inbox.';
+    } catch {
+      status.textContent = 'Something went wrong sending that — please try again in a moment.';
+    }
+  }
+
   document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('signupForm')?.addEventListener('submit', submitSignup);
+    document.getElementById('resendVerificationLink')?.addEventListener('click', resendVerification);
   });
 })();

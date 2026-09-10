@@ -25,6 +25,10 @@
       api('/api/auth/signup', { method: 'POST', body: JSON.stringify({ username, email, password, name, phone }) }),
     login: (username, password) =>
       api('/api/auth/login', { method: 'POST', body: JSON.stringify({ username, password }) }),
+    resendVerification: (identifier) => api('/api/auth/resend-verification', {
+      method: 'POST',
+      body: JSON.stringify(identifier.includes('@') ? { email: identifier } : { username: identifier }),
+    }),
     logout: () => api('/api/auth/logout', { method: 'POST' }),
     me: () => api('/api/auth/me'),
     updateMe: (data) => api('/api/auth/me', { method: 'PATCH', body: JSON.stringify(data) }),
