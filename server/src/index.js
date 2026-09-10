@@ -27,11 +27,6 @@ app.use(express.json({ limit: '10mb' }));
 app.use(cookieParser());
 
 app.get('/health', (req, res) => res.json({ ok: true }));
-// TEMP diagnostic — remove after confirming FRONTEND_BASE is clean.
-app.get('/health/config', (req, res) => {
-  const { getFrontendBase } = require('./lib/frontendBase');
-  res.json({ raw: JSON.stringify(process.env.FRONTEND_BASE), cleaned: getFrontendBase() });
-});
 
 app.use('/api/products', productsRoutes);
 app.use('/api/orders', ordersRoutes);
