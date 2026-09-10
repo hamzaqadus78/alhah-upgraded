@@ -12,6 +12,7 @@ const {
 const { formatOrderNumber } = require('../lib/orderNumber');
 const { isValidEmail } = require('../lib/validateEmail');
 const emailService = require('../services/email.service');
+const { getFrontendBase } = require('../lib/frontendBase');
 
 const USERNAME_RE = /^[a-zA-Z0-9_.-]{3,30}$/;
 
@@ -56,7 +57,7 @@ async function signup(req, res, next) {
     // from ever signing up successfully.
     try {
       const token = signEmailVerifyToken(user.id);
-      const link = `${process.env.FRONTEND_BASE}/verify-email.html?token=${token}`;
+      const link = `${getFrontendBase()}/verify-email.html?token=${token}`;
       await emailService.sendSignupVerificationEmail(user.email, user.name, link);
     } catch (emailErr) {
       await prisma.user.delete({ where: { id: user.id } });
@@ -128,7 +129,7 @@ async function resendVerification(req, res, next) {
     // verified — avoids leaking which emails have accounts.
     if (user && !user.emailVerified) {
       const token = signEmailVerifyToken(user.id);
-      const link = `${process.env.FRONTEND_BASE}/verify-email.html?token=${token}`;
+      const link = `${getFrontendBase()}/verify-email.html?token=${token}`;
       await emailService.sendSignupVerificationEmail(user.email, user.name, link);
     }
     res.json({ ok: true });

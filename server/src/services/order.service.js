@@ -4,6 +4,7 @@ const { formatOrderNumber } = require('../lib/orderNumber');
 const emailService = require('./email.service');
 const { isValidEmail } = require('../lib/validateEmail');
 const { signCheckoutToken } = require('../lib/auth');
+const { getFrontendBase } = require('../lib/frontendBase');
 
 // The client's `required` attributes can be bypassed by calling the API
 // directly, so contact-detail checks must be enforced here too, not just
@@ -83,7 +84,7 @@ async function beginCheckout(payload, userId) {
   const { orderItemsData } = await validateCartItems(items);
 
   const token = signCheckoutToken(payload, userId);
-  const link = `${process.env.FRONTEND_BASE}/checkout-confirm.html?token=${token}`;
+  const link = `${getFrontendBase()}/checkout-confirm.html?token=${token}`;
   const itemsSummary = orderItemsData.map((i) => `${i.nameSnapshot} × ${i.qty}`).join('\n');
   await emailService.sendCheckoutVerificationEmail(customerEmail, customerName, link, itemsSummary);
 
