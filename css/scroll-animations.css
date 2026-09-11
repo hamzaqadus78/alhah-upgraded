@@ -10,9 +10,24 @@ html {
   scroll-behavior: smooth;
 }
 
-/* ---------- Animated mesh background ---------- */
+/* Positioned so #saMeshBg (absolute) sizes to the document instead of the
+   viewport — see the comment there. */
+body {
+  position: relative;
+}
+
+/* ---------- Animated mesh background ----------
+   position: absolute (not fixed) + body{position:relative} below — sizes
+   this to the actual document height instead of the viewport. With
+   `fixed`, this full-viewport layer sat behind normal content but *in
+   front of* the html background-color fix (css/style.css), so once
+   scrolled to the very end of a page whose content falls short of the
+   viewport (common on mobile below the dark footer), its white gradient
+   showed through as a stray white gap instead of the intended dark
+   background. Sizing it to the document means it now ends exactly where
+   real content ends. */
 #saMeshBg {
-  position: fixed;
+  position: absolute;
   inset: 0;
   z-index: -1;
   pointer-events: none;
