@@ -2,6 +2,9 @@
 <html lang="en">
 
 <head>
+    <script>
+    (function(){try{var scope=location.pathname.indexOf('admin')!==-1?'admin':'shop';var s=JSON.parse(localStorage.getItem('alhah_theme_'+scope)||'null');if(!s)return;var r=document.documentElement;var ov=null;try{ov=localStorage.getItem('alhah_theme_mode_override_'+scope);}catch(e){}var mode=(s.allowToggle&&(ov==='light'||ov==='dark'))?ov:(s.defaultMode==='dark'?'dark':'light');r.setAttribute('data-theme',mode);var FONTS={'dm-sans':"'DM Sans'",'inter':"'Inter'",'poppins':"'Poppins'",'montserrat':"'Montserrat'",'ibm-plex-sans':"'IBM Plex Sans'"};r.style.setProperty('--theme-font',FONTS[s.fontKey]||"'DM Sans'");var RAD={sharp:'4px',rounded:(scope==='admin'?'8px':'12px'),pill:'50px'};r.style.setProperty('--theme-btn-radius',RAD[s.buttonShape]||RAD.rounded);r.setAttribute('data-btn-fill',s.buttonFill||'solid');if(scope==='shop'){r.style.setProperty('--teal',s.accentColor);r.style.setProperty('--emerald',s.accentColor2);r.style.setProperty('--shop-teal',s.accentColor);r.style.setProperty('--shop-emerald',s.accentColor2);r.style.setProperty('--bs-primary',s.accentColor);}else{r.style.setProperty('--admin-accent',s.accentColor);}}catch(e){}})();
+    </script>
     <meta charset="utf-8">
     <title>Admin Login | ALHAH INDUSTRIES</title>
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
@@ -37,6 +40,7 @@
     </div>
 
     <script src="js/config.js"></script>
+    <script src="js/theme.js"></script>
     <script src="js/admin.js"></script>
     <script src="js/password-toggle.js"></script>
 </body>

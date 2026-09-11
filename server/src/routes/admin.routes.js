@@ -4,6 +4,7 @@ const authAdmin = require('../controllers/admin/authAdmin.controller');
 const products = require('../controllers/admin/products.controller');
 const orders = require('../controllers/admin/orders.controller');
 const users = require('../controllers/admin/users.controller');
+const settings = require('../controllers/admin/settings.controller');
 const { uploadImage } = require('../controllers/admin/upload.controller');
 const { requireAdmin } = require('../middleware/requireAdmin');
 const { upload } = require('../middleware/upload');
@@ -40,5 +41,7 @@ router.get('/users', users.listUsers);
 router.patch('/users/:id/active', users.setUserActive);
 router.patch('/users/:id/password', users.resetUserPassword);
 router.delete('/users/:id', users.deleteUser);
+
+router.patch('/settings/:scope', settings.updateSettings);
 
 module.exports = router;

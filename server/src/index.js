@@ -9,6 +9,7 @@ const ordersRoutes = require('./routes/orders.routes');
 const contactRoutes = require('./routes/contact.routes');
 const authRoutes = require('./routes/auth.routes');
 const adminRoutes = require('./routes/admin.routes');
+const settingsRoutes = require('./routes/settings.routes');
 
 const app = express();
 
@@ -33,6 +34,7 @@ app.use('/api/orders', ordersRoutes);
 app.use('/api/contact', contactRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/admin', adminRoutes);
+app.use('/api/settings', settingsRoutes);
 
 app.use(errorHandler);
 

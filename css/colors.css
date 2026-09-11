@@ -302,7 +302,7 @@ h1, h2, h3, h4, h5, h6,
 .display-4, .display-5, .display-6,
 p, small, span, a, li, td, th,
 .footer, .copyright {
-  font-family: 'DM Sans', system-ui, -apple-system, sans-serif !important;
+  font-family: var(--theme-font, 'DM Sans'), system-ui, -apple-system, sans-serif !important;
 }
 
 /* ── FOOTER SOCIAL BUTTONS (btn-square btn-light) ──────────────
@@ -401,20 +401,20 @@ span.cart-badge {
 .section-title-badge {
   background: rgba(0,109,119,.1) !important;
   color: var(--teal, #006D77) !important;
-  border-radius: 50px !important;
+  border-radius: var(--theme-btn-radius, 50px) !important;
 }
 
 /* ── SEARCH BAR font ─────────────────────────────────────────────── */
 #siteSearchBar,
 #siteSearchBar::placeholder {
-  font-family: 'DM Sans', system-ui, sans-serif !important;
+  font-family: var(--theme-font, 'DM Sans'), system-ui, sans-serif !important;
 }
 
 /* ── CHECKOUT / CART form inputs ─────────────────────────────────── */
 .checkout-form-group input,
 .checkout-form-group textarea,
 .checkout-form-group select {
-  font-family: 'DM Sans', system-ui, sans-serif !important;
+  font-family: var(--theme-font, 'DM Sans'), system-ui, sans-serif !important;
 }
 
 /* ── BACK TO TOP teal ────────────────────────────────────────────── */
@@ -442,7 +442,7 @@ span.cart-badge {
 /* The heading band behind "MAIN CATEGORIES" — even darker pill */
 .category-header-section h3::before {
   background: rgba(0,0,0,.25) !important;
-  border-radius: 50px !important;
+  border-radius: var(--theme-btn-radius, 50px) !important;
 }
 
 /* ── 2. BREADCRUMB LINKS — gold → teal (About, Contact pages) ── */
@@ -543,7 +543,7 @@ a:hover { color: var(--teal-light, #0097A7) !important; }
   border: 2px solid var(--teal, #006D77) !important;
   color: #fff !important;
   padding: 12px 28px !important;
-  border-radius: 50px !important;
+  border-radius: var(--theme-btn-radius, 50px) !important;
   font-weight: 700 !important;
   font-size: .88rem !important;
   display: inline-flex !important;
@@ -565,7 +565,7 @@ a:hover { color: var(--teal-light, #0097A7) !important; }
   color: #fff !important;
   background: transparent !important;
   padding: 12px 28px !important;
-  border-radius: 50px !important;
+  border-radius: var(--theme-btn-radius, 50px) !important;
   font-weight: 700 !important;
   font-size: .88rem !important;
   display: inline-flex !important;
@@ -585,7 +585,7 @@ a:hover { color: var(--teal-light, #0097A7) !important; }
   color: var(--teal, #006D77) !important;
   background: transparent !important;
   padding: 12px 28px !important;
-  border-radius: 50px !important;
+  border-radius: var(--theme-btn-radius, 50px) !important;
   font-weight: 700 !important;
   font-size: .88rem !important;
   display: inline-flex !important;
@@ -605,7 +605,7 @@ a:hover { color: var(--teal-light, #0097A7) !important; }
 .btn-submit-inquiry {
   background: var(--teal, #006D77) !important;
   border: none !important;
-  border-radius: 50px !important;
+  border-radius: var(--theme-btn-radius, 50px) !important;
   font-weight: 700 !important;
   font-size: .88rem !important;
   letter-spacing: .5px !important;
@@ -619,7 +619,7 @@ a:hover { color: var(--teal-light, #0097A7) !important; }
 
 /* Add to Enquiry card button */
 .btn-add-cart {
-  border-radius: 50px !important;
+  border-radius: var(--theme-btn-radius, 50px) !important;
   font-weight: 700 !important;
 }
 .btn-add-cart:not(.added):hover {
@@ -640,4 +640,119 @@ a:hover { color: var(--teal-light, #0097A7) !important; }
 /* ── 7. Heritage icon color (about page — was gold) ── */
 .heritage-icon i { color: var(--teal, #006D77) !important; }
 .heritage-hover-card .heritage-icon { color: var(--teal, #006D77) !important; }
+
+/* ================================================================
+   THEME ENGINE — driven by js/theme.js, which reads the admin's
+   "Edit Website" settings and sets these custom properties / the
+   data-theme attribute on <html> at runtime. Falls back to the
+   original hardcoded look (unchanged) when nothing has been set.
+   ================================================================ */
+
+/* ── Button fill style ── */
+[data-btn-fill="outline"] .btn-primary,
+[data-btn-fill="outline"] .btn-checkout,
+[data-btn-fill="outline"] .btn-submit-inquiry,
+[data-btn-fill="outline"] .btn-add-cart {
+  background: transparent !important;
+  color: var(--teal, #006D77) !important;
+}
+[data-btn-fill="outline"] .btn-primary:hover,
+[data-btn-fill="outline"] .btn-checkout:hover,
+[data-btn-fill="outline"] .btn-submit-inquiry:hover,
+[data-btn-fill="outline"] .btn-add-cart:hover {
+  background: var(--teal, #006D77) !important;
+  color: #fff !important;
+}
+[data-btn-fill="gradient"] .btn-primary,
+[data-btn-fill="gradient"] .btn-checkout,
+[data-btn-fill="gradient"] .btn-submit-inquiry,
+[data-btn-fill="gradient"] .btn-add-cart {
+  background: linear-gradient(135deg, var(--teal, #006D77), var(--emerald, #00C49A)) !important;
+  border-color: transparent !important;
+  color: #fff !important;
+}
+[data-btn-fill="gradient"] .btn-primary:hover,
+[data-btn-fill="gradient"] .btn-checkout:hover,
+[data-btn-fill="gradient"] .btn-submit-inquiry:hover,
+[data-btn-fill="gradient"] .btn-add-cart:hover {
+  filter: brightness(1.1);
+}
+
+/* ── Dark mode (shop) — visitor-toggleable, off by default ──
+   Footer/copyright are already dark in both modes today, so they need
+   no override here. */
+html[data-theme="dark"],
+html[data-theme="dark"] body {
+  background-color: #0e1116 !important;
+  color: #d7dbe2 !important;
+}
+[data-theme="dark"] .bg-white,
+[data-theme="dark"] .navbar.bg-white,
+[data-theme="dark"] .container-fluid.bg-white,
+[data-theme="dark"] .page-header .bg-white {
+  background-color: #171a21 !important;
+  color: #d7dbe2 !important;
+}
+[data-theme="dark"] .navbar-nav .nav-link {
+  color: #d7dbe2 !important;
+}
+[data-theme="dark"] .product-card,
+[data-theme="dark"] .heritage-hover-card,
+[data-theme="dark"] .admin-card,
+[data-theme="dark"] .shop-cart-drawer {
+  background-color: #171a21 !important;
+  color: #d7dbe2 !important;
+  border-color: #2a2f3a !important;
+}
+[data-theme="dark"] .checkout-form-group input,
+[data-theme="dark"] .checkout-form-group textarea,
+[data-theme="dark"] .checkout-form-group select,
+[data-theme="dark"] input,
+[data-theme="dark"] textarea,
+[data-theme="dark"] select {
+  background-color: #1c2029 !important;
+  color: #d7dbe2 !important;
+  border-color: #2a2f3a !important;
+}
+[data-theme="dark"] .text-muted,
+[data-theme="dark"] p,
+[data-theme="dark"] small {
+  color: #a8afbd !important;
+}
+[data-theme="dark"] h1, [data-theme="dark"] h2, [data-theme="dark"] h3,
+[data-theme="dark"] h4, [data-theme="dark"] h5, [data-theme="dark"] h6 {
+  color: #f0f2f5 !important;
+}
+[data-theme="dark"] .breadcrumb-item.active { color: #a8afbd !important; }
+[data-theme="dark"] .dropdown-menu.bg-light {
+  background-color: #171a21 !important;
+}
+[data-theme="dark"] .dropdown-item {
+  color: #d7dbe2 !important;
+}
+
+/* ── Light/dark mode toggle button (injected by js/theme.js) ── */
+.theme-toggle-btn {
+  position: fixed;
+  bottom: 90px;
+  right: 30px;
+  z-index: 999;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: none;
+  background: var(--teal, #006D77);
+  color: #fff;
+  font-size: 1.1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(0,0,0,.25);
+  transition: background .2s ease, transform .2s ease;
+}
+.theme-toggle-btn:hover { background: var(--emerald, #00C49A); transform: translateY(-2px); }
+@media (max-width: 991.98px) {
+  .theme-toggle-btn { bottom: 150px; right: 20px; }
+}
 

@@ -54,6 +54,8 @@
     setUserActive: (id, active) => api(`/api/admin/users/${id}/active`, { method: 'PATCH', body: JSON.stringify({ active }) }),
     resetUserPassword: (id, newPassword) => api(`/api/admin/users/${id}/password`, { method: 'PATCH', body: JSON.stringify({ newPassword }) }),
     deleteUser: (id) => api(`/api/admin/users/${id}`, { method: 'DELETE' }),
+    getSiteSettings: (scope) => api(`/api/settings/${scope}`),
+    updateSiteSettings: (scope, data) => api(`/api/admin/settings/${scope}`, { method: 'PATCH', body: JSON.stringify(data) }),
     uploadImage: uploadImageFile,
   };
 
@@ -113,6 +115,7 @@
         loadOrders();
         loadUsers();
         loadAdmins();
+        loadWebsiteSettings();
       })
       .catch(() => { window.location.href = 'admin-login.html'; });
 
@@ -134,6 +137,7 @@
     initAdminModal();
     initSettingsModal();
     initResetPwModal();
+    initWebsiteSettings();
   }
 
   // ── Products ────────────────────────────────────────────────────
@@ -473,6 +477,167 @@
         btn.disabled = false;
       }
     });
+  }
+
+  // ── Edit Website (shop + admin dashboard appearance) ─────────────
+  const ACCENT_PRESETS = [
+    { primary: '#006D77', secondary: '#00C49A' },
+    { primary: '#6366f1', secondary: '#818cf8' },
+    { primary: '#1e3a5f', secondary: '#38bdf8' },
+    { primary: '#14532d', secondary: '#84cc16' },
+    { primary: '#7f1d1d', secondary: '#fb7185' },
+    { primary: '#334155', secondary: '#22d3ee' },
+  ];
+  const WS_DEFAULTS = {
+    shop: { fontKey: 'dm-sans', accentColor: '#006D77', accentColor2: '#00C49A', defaultMode: 'light', allowToggle: true, buttonShape: 'rounded', buttonFill: 'solid' },
+    admin: { fontKey: 'dm-sans', accentColor: '#6366f1', accentColor2: '#818cf8', defaultMode: 'dark', allowToggle: true, buttonShape: 'rounded', buttonFill: 'solid' },
+  };
+  const WS_FONT_FAMILIES = { 'dm-sans': "'DM Sans'", inter: "'Inter'", poppins: "'Poppins'", montserrat: "'Montserrat'", 'ibm-plex-sans': "'IBM Plex Sans'" };
+
+  function samePreset(a, b) {
+    return a.primary.toLowerCase() === b.primary.toLowerCase() && a.secondary.toLowerCase() === b.secondary.toLowerCase();
+  }
+
+  function renderSwatches(prefix, accentColor, accentColor2, onSelect) {
+    const container = document.getElementById(`${prefix}Swatches`);
+    if (!container) return;
+    const current = { primary: accentColor, secondary: accentColor2 };
+    const matched = ACCENT_PRESETS.find((p) => samePreset(p, current));
+    container.innerHTML = ACCENT_PRESETS.map((p, i) => `
+      <button type="button" class="ws-swatch${matched === p ? ' selected' : ''}" data-preset="${i}" title="${p.primary} / ${p.secondary}">
+        <span style="background:${p.primary};"></span><span style="background:${p.secondary};"></span>
+      </button>`).join('') +
+      `<button type="button" class="ws-swatch ws-swatch-custom${!matched ? ' selected' : ''}" data-preset="custom">Custom</button>`;
+
+    container.querySelectorAll('[data-preset]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        container.querySelectorAll('.ws-swatch').forEach((b) => b.classList.remove('selected'));
+        btn.classList.add('selected');
+        onSelect(btn.dataset.preset === 'custom' ? null : ACCENT_PRESETS[Number(btn.dataset.preset)]);
+      });
+    });
+  }
+
+  function updateWsPreview(prefix) {
+    const preview = document.getElementById(`${prefix}Preview`);
+    if (!preview) return;
+    const accent1 = document.getElementById(`${prefix}Accent1`).value;
+    const accent2 = document.getElementById(`${prefix}Accent2`).value;
+    const shape = document.getElementById(`${prefix}ButtonShape`).value;
+    const fill = document.getElementById(`${prefix}ButtonFill`).value;
+    const font = document.getElementById(`${prefix}Font`).value;
+    const radius = shape === 'sharp' ? '4px' : shape === 'pill' ? '50px' : '10px';
+    const fontFamily = `${WS_FONT_FAMILIES[font] || "'DM Sans'"}, sans-serif`;
+    const btn = preview.querySelector('.ws-preview-btn');
+    const heading = preview.querySelector('.ws-preview-heading');
+    heading.style.fontFamily = fontFamily;
+    btn.style.fontFamily = fontFamily;
+    btn.style.borderRadius = radius;
+    btn.style.border = `2px solid ${accent1}`;
+    if (fill === 'outline') {
+      btn.style.background = 'transparent';
+      btn.style.color = accent1;
+    } else if (fill === 'gradient') {
+      btn.style.background = `linear-gradient(135deg, ${accent1}, ${accent2})`;
+      btn.style.borderColor = 'transparent';
+      btn.style.color = '#fff';
+    } else {
+      btn.style.background = accent1;
+      btn.style.color = '#fff';
+    }
+  }
+
+  function populateWsForm(prefix, settings) {
+    document.getElementById(`${prefix}Font`).value = settings.fontKey;
+    document.getElementById(`${prefix}ButtonShape`).value = settings.buttonShape;
+    document.getElementById(`${prefix}ButtonFill`).value = settings.buttonFill;
+    document.getElementById(`${prefix}DefaultMode`).value = settings.defaultMode;
+    document.getElementById(`${prefix}AllowToggle`).checked = settings.allowToggle;
+    document.getElementById(`${prefix}Accent1`).value = settings.accentColor;
+    document.getElementById(`${prefix}Accent2`).value = settings.accentColor2;
+
+    const matched = ACCENT_PRESETS.find((p) => samePreset(p, { primary: settings.accentColor, secondary: settings.accentColor2 }));
+    document.getElementById(`${prefix}CustomColors`).style.display = matched ? 'none' : 'flex';
+
+    renderSwatches(prefix, settings.accentColor, settings.accentColor2, (preset) => {
+      if (preset) {
+        document.getElementById(`${prefix}Accent1`).value = preset.primary;
+        document.getElementById(`${prefix}Accent2`).value = preset.secondary;
+        document.getElementById(`${prefix}CustomColors`).style.display = 'none';
+      } else {
+        document.getElementById(`${prefix}CustomColors`).style.display = 'flex';
+      }
+      updateWsPreview(prefix);
+    });
+
+    updateWsPreview(prefix);
+  }
+
+  function setupAppearanceForm(scope, prefix) {
+    const form = document.getElementById(`${prefix}Form`);
+    if (!form) return;
+
+    ['Font', 'ButtonShape', 'ButtonFill', 'DefaultMode'].forEach((field) => {
+      document.getElementById(`${prefix}${field}`).addEventListener('change', () => updateWsPreview(prefix));
+    });
+    document.getElementById(`${prefix}Accent1`).addEventListener('input', () => updateWsPreview(prefix));
+    document.getElementById(`${prefix}Accent2`).addEventListener('input', () => updateWsPreview(prefix));
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      showError(`${prefix}Error`, null);
+      const btn = form.querySelector('button[type="submit"]');
+      btn.disabled = true;
+      try {
+        const updated = await AlhahAdmin.updateSiteSettings(scope, {
+          fontKey: document.getElementById(`${prefix}Font`).value,
+          accentColor: document.getElementById(`${prefix}Accent1`).value,
+          accentColor2: document.getElementById(`${prefix}Accent2`).value,
+          defaultMode: document.getElementById(`${prefix}DefaultMode`).value,
+          allowToggle: document.getElementById(`${prefix}AllowToggle`).checked,
+          buttonShape: document.getElementById(`${prefix}ButtonShape`).value,
+          buttonFill: document.getElementById(`${prefix}ButtonFill`).value,
+        });
+        populateWsForm(prefix, updated);
+        if (scope === 'admin' && window.AlhahTheme) window.AlhahTheme.apply(updated);
+      } catch (err) {
+        showError(`${prefix}Error`, err.message);
+      } finally {
+        btn.disabled = false;
+      }
+    });
+
+    document.getElementById(`${prefix}Reset`).addEventListener('click', async () => {
+      if (!confirm('Reset this appearance to the default look? This cannot be undone.')) return;
+      showError(`${prefix}Error`, null);
+      try {
+        const updated = await AlhahAdmin.updateSiteSettings(scope, WS_DEFAULTS[scope]);
+        populateWsForm(prefix, updated);
+        if (scope === 'admin' && window.AlhahTheme) window.AlhahTheme.apply(updated);
+      } catch (err) {
+        showError(`${prefix}Error`, err.message);
+      }
+    });
+  }
+
+  async function loadWebsiteSettings() {
+    if (!document.getElementById('panel-website')) return;
+    try {
+      const [shop, adminAppearance] = await Promise.all([
+        AlhahAdmin.getSiteSettings('shop'),
+        AlhahAdmin.getSiteSettings('admin'),
+      ]);
+      populateWsForm('wsShop', shop);
+      populateWsForm('wsAdmin', adminAppearance);
+    } catch (err) {
+      showError('wsShopError', 'Could not load appearance settings.');
+    }
+  }
+
+  function initWebsiteSettings() {
+    if (!document.getElementById('panel-website')) return;
+    setupAppearanceForm('shop', 'wsShop');
+    setupAppearanceForm('admin', 'wsAdmin');
   }
 
   document.addEventListener('DOMContentLoaded', () => {

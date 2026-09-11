@@ -23,9 +23,21 @@
 
 body.admin-body {
   margin: 0;
-  font-family: 'DM Sans', system-ui, -apple-system, sans-serif;
+  font-family: var(--theme-font, 'DM Sans'), system-ui, -apple-system, sans-serif;
   background: var(--admin-bg);
   color: var(--admin-ink);
+}
+
+/* ── Light mode (admin dashboard is dark by default) ──
+   Toggled by js/theme.js the same way as the shop's [data-theme="dark"]. */
+:root[data-theme="light"] {
+  --admin-bg: #f4f6f9;
+  --admin-surface: #ffffff;
+  --admin-surface-2: #eef0f4;
+  --admin-border: #dde1e8;
+  --admin-ink: #1a1d24;
+  --admin-ink-dim: #667085;
+  --admin-accent-soft: rgba(99, 102, 241, .12);
 }
 
 /* ── Login page ─────────────────────────────────────────────────── */
@@ -70,17 +82,30 @@ body.admin-body {
 
 .admin-btn {
   display: inline-flex; align-items: center; gap: 8px;
-  background: var(--admin-accent); color: #fff; border: none;
-  padding: 10px 22px; border-radius: 8px; font-weight: 700; font-size: .85rem;
+  background: var(--admin-accent); color: #fff; border: 2px solid var(--admin-accent);
+  padding: 10px 22px; border-radius: var(--theme-btn-radius, 8px); font-weight: 700; font-size: .85rem;
   cursor: pointer; transition: all .15s ease;
 }
-.admin-btn:hover { background: var(--admin-accent-hover); transform: translateY(-1px); }
+.admin-btn:hover { background: var(--admin-accent-hover); border-color: var(--admin-accent-hover); transform: translateY(-1px); }
 .admin-btn:disabled { opacity: .5; cursor: not-allowed; transform: none; }
-.admin-btn-danger { background: var(--admin-danger); }
-.admin-btn-danger:hover { background: var(--admin-danger-hover); }
+.admin-btn-danger { background: var(--admin-danger); border-color: var(--admin-danger); }
+.admin-btn-danger:hover { background: var(--admin-danger-hover); border-color: var(--admin-danger-hover); }
 .admin-btn-ghost { background: transparent; color: var(--admin-accent-hover); border: 1.5px solid var(--admin-border); }
 .admin-btn-ghost:hover { background: var(--admin-surface-2); color: var(--admin-ink); border-color: var(--admin-accent); }
 .admin-btn-sm { padding: 6px 14px; font-size: .78rem; }
+
+/* ── Button fill style (Edit Website settings) ── */
+[data-btn-fill="outline"] .admin-btn:not(.admin-btn-ghost) {
+  background: transparent; color: var(--admin-accent-hover);
+}
+[data-btn-fill="outline"] .admin-btn:not(.admin-btn-ghost):hover {
+  background: var(--admin-accent); color: #fff;
+}
+[data-btn-fill="gradient"] .admin-btn:not(.admin-btn-ghost) {
+  background: linear-gradient(135deg, var(--admin-accent), var(--admin-accent-hover));
+  border-color: transparent; color: #fff;
+}
+[data-btn-fill="gradient"] .admin-btn:not(.admin-btn-ghost):hover { filter: brightness(1.15); }
 
 .admin-error {
   display: none; background: rgba(239,68,68,.1); border: 1px solid rgba(239,68,68,.35); color: #fca5a5;
@@ -96,6 +121,14 @@ body.admin-body {
 .admin-topbar .brand { font-weight: 800; font-size: 1.05rem; letter-spacing: .3px; color: var(--admin-ink); }
 .admin-topbar .brand span { color: var(--admin-accent-hover); }
 .admin-topbar .who { font-size: .82rem; color: var(--admin-ink-dim); }
+
+.admin-theme-toggle {
+  width: 32px; height: 32px; border-radius: 50%; border: 1px solid var(--admin-border);
+  background: var(--admin-surface-2); color: var(--admin-ink-dim);
+  display: inline-flex; align-items: center; justify-content: center;
+  cursor: pointer; font-size: .9rem; transition: all .15s ease;
+}
+.admin-theme-toggle:hover { color: var(--admin-ink); border-color: var(--admin-accent); }
 
 .admin-tabs {
   display: flex; gap: 4px; background: var(--admin-surface); padding: 0 28px;
@@ -175,6 +208,40 @@ body.admin-body {
    against the dark inputs used everywhere in the admin dashboard. */
 .admin-body .pw-toggle-btn { color: var(--admin-ink-dim); }
 .admin-body .pw-toggle-btn:hover { color: var(--admin-ink); }
+
+/* ── Edit Website tab ──────────────────────────────────────────── */
+.ws-swatch-row { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 4px; }
+.ws-swatch {
+  width: 40px; height: 40px; border-radius: 50%; border: 2px solid transparent;
+  cursor: pointer; padding: 0; position: relative; overflow: hidden;
+  transition: transform .15s ease, border-color .15s ease;
+}
+.ws-swatch:hover { transform: scale(1.08); }
+.ws-swatch.selected { border-color: var(--admin-ink); }
+.ws-swatch span { position: absolute; top: 0; bottom: 0; width: 50%; }
+.ws-swatch span:first-child { left: 0; }
+.ws-swatch span:last-child { right: 0; }
+.ws-swatch.ws-swatch-custom {
+  background: var(--admin-surface-2); border: 2px dashed var(--admin-border);
+  display: flex; align-items: center; justify-content: center; color: var(--admin-ink-dim); font-size: .7rem;
+}
+.ws-custom-colors { display: flex; gap: 20px; margin-top: 10px; }
+.ws-custom-colors input[type="color"] { width: 50px; height: 34px; padding: 2px; border: 1px solid var(--admin-border); border-radius: 6px; background: var(--admin-surface-2); cursor: pointer; }
+.ws-custom-colors small { display: block; color: var(--admin-ink-dim); margin-bottom: 4px; }
+
+.ws-preview {
+  background: var(--admin-surface-2); border: 1px solid var(--admin-border); border-radius: 10px;
+  padding: 20px; margin: 6px 0 18px; display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap;
+}
+.ws-preview-heading { font-size: 1.15rem; font-weight: 800; color: var(--admin-ink); font-family: var(--theme-font, inherit); }
+/* Base reset — admin-dashboard.html doesn't load the shop's own button
+   CSS (colors.css), so this preview button needs its own baseline;
+   js/admin.js then overrides background/color/border/radius inline to
+   match the pending settings before they're saved. */
+.ws-preview-btn {
+  pointer-events: none; border: none; padding: 12px 28px; font-weight: 700;
+  font-size: .88rem; display: inline-flex; align-items: center; gap: 8px;
+}
 
 @media (max-width: 700px) {
   .admin-content { padding: 16px; }

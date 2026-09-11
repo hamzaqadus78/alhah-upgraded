@@ -96,3 +96,18 @@ enum OrderStatus {
   FAILED
   CANCELLED
 }
+
+// One row per scope ("shop" | "admin") — the shop and admin dashboard have
+// independent appearance settings, never synced to each other.
+model SiteSettings {
+  id           String   @id @default(cuid())
+  scope        String   @unique
+  fontKey      String   @default("dm-sans")
+  accentColor  String   @default("#006D77")
+  accentColor2 String   @default("#00C49A")
+  defaultMode  String   @default("light")
+  allowToggle  Boolean  @default(true)
+  buttonShape  String   @default("rounded")
+  buttonFill   String   @default("solid")
+  updatedAt    DateTime @updatedAt
+}

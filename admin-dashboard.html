@@ -2,6 +2,9 @@
 <html lang="en">
 
 <head>
+    <script>
+    (function(){try{var scope=location.pathname.indexOf('admin')!==-1?'admin':'shop';var s=JSON.parse(localStorage.getItem('alhah_theme_'+scope)||'null');if(!s)return;var r=document.documentElement;var ov=null;try{ov=localStorage.getItem('alhah_theme_mode_override_'+scope);}catch(e){}var mode=(s.allowToggle&&(ov==='light'||ov==='dark'))?ov:(s.defaultMode==='dark'?'dark':'light');r.setAttribute('data-theme',mode);var FONTS={'dm-sans':"'DM Sans'",'inter':"'Inter'",'poppins':"'Poppins'",'montserrat':"'Montserrat'",'ibm-plex-sans':"'IBM Plex Sans'"};r.style.setProperty('--theme-font',FONTS[s.fontKey]||"'DM Sans'");var RAD={sharp:'4px',rounded:(scope==='admin'?'8px':'12px'),pill:'50px'};r.style.setProperty('--theme-btn-radius',RAD[s.buttonShape]||RAD.rounded);r.setAttribute('data-btn-fill',s.buttonFill||'solid');if(scope==='shop'){r.style.setProperty('--teal',s.accentColor);r.style.setProperty('--emerald',s.accentColor2);r.style.setProperty('--shop-teal',s.accentColor);r.style.setProperty('--shop-emerald',s.accentColor2);r.style.setProperty('--bs-primary',s.accentColor);}else{r.style.setProperty('--admin-accent',s.accentColor);}}catch(e){}})();
+    </script>
     <meta charset="utf-8">
     <title>Admin Dashboard | ALHAH INDUSTRIES</title>
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
@@ -15,7 +18,7 @@
 <body class="admin-body">
     <div class="admin-topbar">
         <div class="brand">ALHAH <span>Admin</span></div>
-        <div class="d-flex align-items-center" style="display:flex;align-items:center;gap:16px;">
+        <div class="d-flex align-items-center" id="adminTopbarActions" style="display:flex;align-items:center;gap:16px;">
             <span class="who" id="adminWho"></span>
             <button class="admin-btn admin-btn-ghost admin-btn-sm" id="adminSettingsBtn"><i class="fas fa-cog"></i> Settings</button>
             <button class="admin-btn admin-btn-ghost admin-btn-sm" id="adminLogoutBtn"><i class="fas fa-sign-out-alt"></i> Log Out</button>
@@ -27,6 +30,7 @@
         <div class="admin-tab" data-panel="orders">Orders</div>
         <div class="admin-tab" data-panel="users">Users</div>
         <div class="admin-tab" data-panel="admins">Admins</div>
+        <div class="admin-tab" data-panel="website">Edit Website</div>
     </div>
 
     <div class="admin-content">
@@ -96,6 +100,141 @@
                     </thead>
                     <tbody id="adminsTableBody"></tbody>
                 </table>
+            </div>
+        </div>
+
+        <!-- ===================== EDIT WEBSITE ===================== -->
+        <div class="admin-panel" id="panel-website">
+            <div class="admin-section-head"><h2>Edit Website</h2></div>
+
+            <div class="admin-card">
+                <h3 style="margin:0 0 4px;">Shop Appearance</h3>
+                <p style="color:var(--admin-ink-dim);font-size:.85rem;margin:0 0 18px;">Controls the customer-facing website (home, shop, checkout, etc). Independent from the admin dashboard's own look below.</p>
+                <div class="admin-error" id="wsShopError"></div>
+                <form id="wsShopForm" data-scope="shop">
+                    <div class="admin-field">
+                        <label>Font</label>
+                        <select id="wsShopFont">
+                            <option value="dm-sans">DM Sans (default)</option>
+                            <option value="inter">Inter</option>
+                            <option value="poppins">Poppins</option>
+                            <option value="montserrat">Montserrat</option>
+                            <option value="ibm-plex-sans">IBM Plex Sans</option>
+                        </select>
+                    </div>
+                    <div class="admin-field">
+                        <label>Accent Colors</label>
+                        <div class="ws-swatch-row" id="wsShopSwatches"></div>
+                        <div class="ws-custom-colors" id="wsShopCustomColors" style="display:none;">
+                            <div><small>Primary</small><input type="color" id="wsShopAccent1"></div>
+                            <div><small>Secondary</small><input type="color" id="wsShopAccent2"></div>
+                        </div>
+                    </div>
+                    <div style="display:flex;gap:12px;">
+                        <div class="admin-field" style="flex:1;">
+                            <label>Button Shape</label>
+                            <select id="wsShopButtonShape">
+                                <option value="sharp">Sharp corners</option>
+                                <option value="rounded">Rounded</option>
+                                <option value="pill">Pill</option>
+                            </select>
+                        </div>
+                        <div class="admin-field" style="flex:1;">
+                            <label>Button Fill</label>
+                            <select id="wsShopButtonFill">
+                                <option value="solid">Solid</option>
+                                <option value="outline">Outline</option>
+                                <option value="gradient">Gradient</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="admin-field">
+                        <label>Default Mode for Visitors</label>
+                        <select id="wsShopDefaultMode">
+                            <option value="light">Light</option>
+                            <option value="dark">Dark</option>
+                        </select>
+                    </div>
+                    <div class="admin-field">
+                        <label style="display:flex;align-items:center;gap:8px;font-weight:400;">
+                            <input type="checkbox" id="wsShopAllowToggle" style="width:auto;" checked>
+                            Let visitors switch between light and dark mode themselves
+                        </label>
+                    </div>
+                    <div class="ws-preview" id="wsShopPreview">
+                        <div class="ws-preview-heading">The quick brown fox</div>
+                        <button type="button" class="ws-preview-btn">Preview Button</button>
+                    </div>
+                    <div class="admin-modal-actions" style="justify-content:flex-start;">
+                        <button type="submit" class="admin-btn">Save Shop Appearance</button>
+                        <button type="button" class="admin-btn admin-btn-ghost" id="wsShopReset">Reset to Defaults</button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="admin-card">
+                <h3 style="margin:0 0 4px;">Admin Dashboard Appearance</h3>
+                <p style="color:var(--admin-ink-dim);font-size:.85rem;margin:0 0 18px;">Controls this dashboard only — what you and other admins see, not the customer site.</p>
+                <div class="admin-error" id="wsAdminError"></div>
+                <form id="wsAdminForm" data-scope="admin">
+                    <div class="admin-field">
+                        <label>Font</label>
+                        <select id="wsAdminFont">
+                            <option value="dm-sans">DM Sans (default)</option>
+                            <option value="inter">Inter</option>
+                            <option value="poppins">Poppins</option>
+                            <option value="montserrat">Montserrat</option>
+                            <option value="ibm-plex-sans">IBM Plex Sans</option>
+                        </select>
+                    </div>
+                    <div class="admin-field">
+                        <label>Accent Colors</label>
+                        <div class="ws-swatch-row" id="wsAdminSwatches"></div>
+                        <div class="ws-custom-colors" id="wsAdminCustomColors" style="display:none;">
+                            <div><small>Primary</small><input type="color" id="wsAdminAccent1"></div>
+                            <div><small>Secondary</small><input type="color" id="wsAdminAccent2"></div>
+                        </div>
+                    </div>
+                    <div style="display:flex;gap:12px;">
+                        <div class="admin-field" style="flex:1;">
+                            <label>Button Shape</label>
+                            <select id="wsAdminButtonShape">
+                                <option value="sharp">Sharp corners</option>
+                                <option value="rounded">Rounded</option>
+                                <option value="pill">Pill</option>
+                            </select>
+                        </div>
+                        <div class="admin-field" style="flex:1;">
+                            <label>Button Fill</label>
+                            <select id="wsAdminButtonFill">
+                                <option value="solid">Solid</option>
+                                <option value="outline">Outline</option>
+                                <option value="gradient">Gradient</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="admin-field">
+                        <label>Default Mode</label>
+                        <select id="wsAdminDefaultMode">
+                            <option value="dark">Dark</option>
+                            <option value="light">Light</option>
+                        </select>
+                    </div>
+                    <div class="admin-field">
+                        <label style="display:flex;align-items:center;gap:8px;font-weight:400;">
+                            <input type="checkbox" id="wsAdminAllowToggle" style="width:auto;" checked>
+                            Let logged-in admins switch between light and dark mode themselves
+                        </label>
+                    </div>
+                    <div class="ws-preview" id="wsAdminPreview">
+                        <div class="ws-preview-heading">The quick brown fox</div>
+                        <button type="button" class="admin-btn ws-preview-btn">Preview Button</button>
+                    </div>
+                    <div class="admin-modal-actions" style="justify-content:flex-start;">
+                        <button type="submit" class="admin-btn">Save Admin Appearance</button>
+                        <button type="button" class="admin-btn admin-btn-ghost" id="wsAdminReset">Reset to Defaults</button>
+                    </div>
+                </form>
             </div>
         </div>
 
@@ -193,6 +332,7 @@
     </div>
 
     <script src="js/config.js"></script>
+    <script src="js/theme.js"></script>
     <script src="js/admin.js"></script>
     <script src="js/password-toggle.js"></script>
 </body>
