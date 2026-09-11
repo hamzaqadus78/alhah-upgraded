@@ -30,9 +30,11 @@ router.get('/products', products.listProducts);
 router.post('/products', products.createProduct);
 router.patch('/products/:id', products.updateProduct);
 router.delete('/products/:id', products.deleteProduct);
+router.delete('/products/:id/permanent', products.deleteProductPermanently);
 
 router.get('/orders', orders.listOrders);
 router.patch('/orders/:id/status', orders.updateOrderStatus);
+router.delete('/orders/:id', orders.deleteOrder);
 
 router.get('/users', users.listUsers);
 router.patch('/users/:id/active', users.setUserActive);

@@ -36,4 +36,16 @@ async function updateOrderStatus(req, res, next) {
   }
 }
 
-module.exports = { listOrders, updateOrderStatus };
+// Permanent — cannot be undone. OrderItem.order is onDelete: Cascade
+// (schema.prisma), so the order's line items are removed along with it.
+async function deleteOrder(req, res, next) {
+  try {
+    await prisma.order.delete({ where: { id: req.params.id } });
+    res.json({ ok: true });
+  } catch (err) {
+    if (err.code === 'P2025') return next(new HttpError(404, 'Order not found.'));
+    next(err);
+  }
+}
+
+module.exports = { listOrders, updateOrderStatus, deleteOrder };

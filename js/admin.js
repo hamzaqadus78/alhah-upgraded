@@ -44,8 +44,10 @@
     createProduct: (data) => api('/api/admin/products', { method: 'POST', body: JSON.stringify(data) }),
     updateProduct: (id, data) => api(`/api/admin/products/${id}`, { method: 'PATCH', body: JSON.stringify(data) }),
     deleteProduct: (id) => api(`/api/admin/products/${id}`, { method: 'DELETE' }),
+    deleteProductPermanently: (id) => api(`/api/admin/products/${id}/permanent`, { method: 'DELETE' }),
     listOrders: () => api('/api/admin/orders'),
     updateOrderStatus: (id, status) => api(`/api/admin/orders/${id}/status`, { method: 'PATCH', body: JSON.stringify({ status }) }),
+    deleteOrder: (id) => api(`/api/admin/orders/${id}`, { method: 'DELETE' }),
     listAdmins: () => api('/api/admin/admins'),
     createAdmin: (data) => api('/api/admin/admins', { method: 'POST', body: JSON.stringify(data) }),
     listUsers: () => api('/api/admin/users'),
@@ -150,6 +152,7 @@
         <td>
           <button class="admin-btn admin-btn-ghost admin-btn-sm" data-edit="${p.id}">Edit</button>
           ${p.active ? `<button class="admin-btn admin-btn-danger admin-btn-sm" data-deactivate="${p.id}">Deactivate</button>` : ''}
+          <button class="admin-btn admin-btn-danger admin-btn-sm" data-delete-permanent="${p.id}" data-name="${p.name}">Delete</button>
         </td>
       </tr>`).join('') || `<tr><td colspan="8" style="text-align:center;color:#888;">No products yet.</td></tr>`;
 
@@ -160,6 +163,16 @@
         if (!confirm('Deactivate this product? It will be hidden from the shop but past orders keep working.')) return;
         await AlhahAdmin.deleteProduct(btn.dataset.deactivate);
         loadProducts();
+      }));
+    body.querySelectorAll('[data-delete-permanent]').forEach((btn) =>
+      btn.addEventListener('click', async () => {
+        if (!confirm(`Permanently delete "${btn.dataset.name}"? This cannot be undone. Past orders will still show what was sold, but this product will be gone from the catalog for good.`)) return;
+        try {
+          await AlhahAdmin.deleteProductPermanently(btn.dataset.deletePermanent);
+          loadProducts();
+        } catch (err) {
+          alert(err.message);
+        }
       }));
   }
 
@@ -273,7 +286,8 @@
             ${STATUS_OPTIONS.map((s) => `<option value="${s}" ${s === o.status ? 'selected' : ''}>${s.replace('_', ' ')}</option>`).join('')}
           </select>
         </td>
-      </tr>`).join('') || `<tr><td colspan="6" style="text-align:center;color:#888;">No orders yet.</td></tr>`;
+        <td><button class="admin-btn admin-btn-danger admin-btn-sm" data-delete-order="${o.id}" data-order-number="${o.orderNumber}">Delete</button></td>
+      </tr>`).join('') || `<tr><td colspan="7" style="text-align:center;color:#888;">No orders yet.</td></tr>`;
 
     body.querySelectorAll('[data-order]').forEach((sel) =>
       sel.addEventListener('change', async () => {
@@ -284,6 +298,16 @@
           alert(`Could not update status: ${err.message}`);
         } finally {
           sel.disabled = false;
+        }
+      }));
+    body.querySelectorAll('[data-delete-order]').forEach((btn) =>
+      btn.addEventListener('click', async () => {
+        if (!confirm(`Permanently delete order ${btn.dataset.orderNumber}? This cannot be undone.`)) return;
+        try {
+          await AlhahAdmin.deleteOrder(btn.dataset.deleteOrder);
+          loadOrders();
+        } catch (err) {
+          alert(err.message);
         }
       }));
   }

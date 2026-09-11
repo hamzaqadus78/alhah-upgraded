@@ -74,11 +74,16 @@ model Admin {
 }
 
 model OrderItem {
-  id                 String  @id @default(cuid())
+  id                 String   @id @default(cuid())
   orderId            String
-  order              Order   @relation(fields: [orderId], references: [id])
-  productId          String
-  product            Product @relation(fields: [productId], references: [id])
+  // Cascade: an OrderItem has no meaning without its Order, so deleting an
+  // order removes its line items too.
+  order              Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId          String?
+  // SetNull: deleting a Product from the catalog must not touch past order
+  // history — nameSnapshot/priceCentsSnapshot already froze what was sold,
+  // so the line item just becomes unlinked from a (now-gone) catalog entry.
+  product            Product? @relation(fields: [productId], references: [id], onDelete: SetNull)
   nameSnapshot       String
   priceCentsSnapshot Int
   qty                Int

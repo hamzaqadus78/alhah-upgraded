@@ -81,4 +81,18 @@ async function deleteProduct(req, res, next) {
   }
 }
 
-module.exports = { listProducts, createProduct, updateProduct, deleteProduct };
+// Permanent — cannot be undone. OrderItem.product is onDelete: SetNull
+// (schema.prisma), and OrderItem already freezes nameSnapshot/
+// priceCentsSnapshot at sale time, so past orders keep displaying
+// correctly even after the catalog entry itself is gone.
+async function deleteProductPermanently(req, res, next) {
+  try {
+    await prisma.product.delete({ where: { id: req.params.id } });
+    res.json({ ok: true });
+  } catch (err) {
+    if (err.code === 'P2025') return next(new HttpError(404, 'Product not found.'));
+    next(err);
+  }
+}
+
+module.exports = { listProducts, createProduct, updateProduct, deleteProduct, deleteProductPermanently };
