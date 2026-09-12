@@ -730,6 +730,22 @@ html[data-theme="dark"] body {
 [data-theme="dark"] .dropdown-item {
   color: #d7dbe2 !important;
 }
+/* The bright teal utility bar (address/phone/social icons) otherwise stays
+   at full brightness even in dark mode, clashing hard against the
+   now-dark navbar directly below it. */
+[data-theme="dark"] .container-fluid.bg-primary.text-white {
+  background-color: #00363b !important;
+}
+[data-theme="dark"] .container-fluid.bg-primary .btn-sm-square.btn-light.text-primary {
+  background-color: #1c2029 !important;
+  color: #d7dbe2 !important;
+}
+/* Dim plain body/link text generally (footer, buttons, nav links already
+   handled above) so nothing but intentional accents stays full-brightness
+   teal against the dark background. */
+[data-theme="dark"] a:not(.btn):not(.nav-link) {
+  color: #6fb8bd !important;
+}
 
 /* ── Light/dark mode toggle button (injected by js/theme.js) ── */
 .theme-toggle-btn {
