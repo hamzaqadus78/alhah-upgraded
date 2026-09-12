@@ -57,10 +57,14 @@
   transition: all .25s ease !important;
   white-space: nowrap;
 }
-#authNavLink:hover {
+#authNavLink:hover,
+#authNavLink:focus,
+#authNavLink:focus-visible {
   background: var(--teal, #006D77) !important;
   color: #fff !important;
   transform: translateY(-2px);
+  outline: none !important;
+  box-shadow: none !important;
 }
 .dropdown-item.active,
 .dropdown-item:active {
