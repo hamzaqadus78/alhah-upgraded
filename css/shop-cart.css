@@ -20,9 +20,7 @@
   transition: all .25s ease;
 }
 .shop-cart-nav-btn:hover {
-  background: var(--shop-emerald);
-  transform: translateY(-2px);
-  box-shadow: 0 6px 18px rgba(0,196,154,.35);
+  background: var(--shop-teal);
 }
 .shop-cart-badge {
   display: none; align-items: center; justify-content: center;

@@ -110,8 +110,7 @@ body {
 .btn-add-cart,
 .btn-checkout,
 .btn-submit-inquiry,
-.cart-nav-btn,
-.shop-cart-nav-btn {
+.cart-nav-btn {
   isolation: isolate;
 }
 .btn-primary::after,
@@ -121,8 +120,7 @@ body {
 .btn-add-cart::after,
 .btn-checkout::after,
 .btn-submit-inquiry::after,
-.cart-nav-btn::after,
-.shop-cart-nav-btn::after {
+.cart-nav-btn::after {
   content: "";
   position: absolute;
   top: 0;
@@ -142,8 +140,7 @@ body {
 .btn-add-cart:hover::after,
 .btn-checkout:hover::after,
 .btn-submit-inquiry:hover::after,
-.cart-nav-btn:hover::after,
-.shop-cart-nav-btn:hover::after {
+.cart-nav-btn:hover::after {
   left: 130%;
 }
 
