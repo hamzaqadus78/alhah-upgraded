@@ -87,6 +87,7 @@
 .dropdown-item.active,
 .dropdown-item:active {
   background-color: var(--teal) !important;
+  color: #fff !important;
 }
 .dropdown-item:hover,
 .dropdown-item:focus {
