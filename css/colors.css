@@ -755,6 +755,24 @@ html[data-theme="dark"] body {
 [data-theme="dark"] .dropdown-item {
   color: #d7dbe2 !important;
 }
+/* js/search.js injects the navbar "Search" trigger with its own hardcoded
+   light-mode styling (near-white #e0e0e0 border, #555 text) — never made
+   dark-mode aware, so it reads as a stark white glow against the
+   near-black dark navbar. */
+[data-theme="dark"] .btn-search-nav {
+  border-color: #3a3f4b !important;
+  color: #d7dbe2 !important;
+}
+[data-theme="dark"] .btn-search-nav kbd {
+  background: #2a2f3a !important;
+  border-color: #3a3f4b !important;
+  color: #a8afbd !important;
+}
+[data-theme="dark"] .btn-search-nav:hover {
+  background: rgba(0,109,119,.2) !important;
+  border-color: var(--teal, #006D77) !important;
+  color: var(--teal-light, #0097A7) !important;
+}
 /* The bright teal utility bar (address/phone/social icons) otherwise stays
    at full brightness even in dark mode, clashing hard against the
    now-dark navbar directly below it. */
