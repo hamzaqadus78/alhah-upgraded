@@ -14,7 +14,7 @@
 
     const btn = document.getElementById('signupBtn');
     btn.disabled = true;
-    btn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Creating account…';
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>Creating account…';
 
     try {
       const { email } = await AlhahAuth.signup(
@@ -34,7 +34,7 @@
     } catch (err) {
       setError(err.message);
       btn.disabled = false;
-      btn.innerHTML = '<i class="fas fa-user-plus me-2"></i>Create Account';
+      btn.innerHTML = '<i class="fas fa-user-plus"></i>Create Account';
     }
   }
 

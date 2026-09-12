@@ -837,3 +837,109 @@ html[data-theme="dark"] body {
   .theme-toggle-btn { bottom: 150px; right: 20px; }
 }
 
+/* ================================================================
+   AUTH PAGES (login/signup) — Modern SaaS style: floating labels,
+   clean bordered inputs, minimal card. Password fields still get
+   wrapped by js/password-toggle.js automatically; :focus-within and
+   :has() below reach through that extra wrapper without depending on
+   exact DOM adjacency.
+   ================================================================ */
+.auth-card {
+  background: #fff;
+  border: 1px solid #eef0f2;
+  border-radius: 16px;
+  padding: 44px 40px;
+  box-shadow: 0 12px 40px rgba(15, 23, 42, .06);
+}
+.auth-icon {
+  width: 52px; height: 52px; border-radius: 14px;
+  background: rgba(0,109,119,.1); color: var(--teal, #006D77);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.4rem; margin: 0 auto 20px;
+}
+.auth-title { font-size: 1.5rem; font-weight: 800; text-align: center; margin-bottom: 6px; }
+.auth-sub { color: #64748b; text-align: center; font-size: .92rem; margin-bottom: 28px; }
+
+.form-floating-group { position: relative; margin-bottom: 18px; }
+.form-floating-group input,
+.form-floating-group select {
+  width: 100%;
+  padding: 19px 16px 7px;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 10px;
+  font-size: .96rem;
+  font-family: inherit;
+  background: #fff;
+  color: #1e293b;
+  outline: none;
+  transition: border-color .2s ease, box-shadow .2s ease;
+}
+.form-floating-group label {
+  position: absolute;
+  left: 17px;
+  top: 15px;
+  font-size: .96rem;
+  color: #94a3b8;
+  font-weight: 500;
+  pointer-events: none;
+  transition: all .18s ease;
+}
+.form-floating-group small.form-hint {
+  display: block;
+  margin-top: 6px;
+  font-size: .76rem;
+  color: #94a3b8;
+}
+.form-floating-group:focus-within input,
+.form-floating-group:has(input:not(:placeholder-shown)) input,
+.form-floating-group:has(select:not([value=""])) select {
+  border-color: var(--teal, #006D77);
+  box-shadow: 0 0 0 3px rgba(0,109,119,.1);
+}
+.form-floating-group:focus-within label,
+.form-floating-group:has(input:not(:placeholder-shown)) label {
+  top: 5px;
+  font-size: .7rem;
+  font-weight: 700;
+  letter-spacing: .3px;
+  color: var(--teal, #006D77);
+}
+/* password-toggle.js wraps the <input> in .pw-toggle-wrap — this makes
+   the extra div behave like part of the same floating field visually. */
+.form-floating-group .pw-toggle-wrap { display: block; }
+.form-floating-group .pw-toggle-wrap input { padding-right: 44px !important; }
+
+.auth-submit-btn {
+  width: 100%;
+  padding: 14px;
+  border: none;
+  border-radius: var(--theme-btn-radius, 10px);
+  background: var(--teal, #006D77);
+  color: #fff;
+  font-weight: 700;
+  font-size: .95rem;
+  letter-spacing: .2px;
+  cursor: pointer;
+  transition: background .2s ease, transform .2s ease;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+}
+.auth-submit-btn:hover { background: var(--emerald, #00C49A); transform: translateY(-2px); }
+.auth-submit-btn:disabled { opacity: .65; cursor: not-allowed; transform: none; }
+
+.auth-footer-link { text-align: center; margin-top: 22px; font-size: .9rem; color: #64748b; }
+.auth-footer-link a { color: var(--teal, #006D77); font-weight: 700; }
+
+[data-theme="dark"] .auth-card {
+  background: #171a21 !important;
+  border-color: #2a2f3a !important;
+}
+[data-theme="dark"] .form-floating-group input,
+[data-theme="dark"] .form-floating-group select {
+  background: #1c2029 !important;
+  border-color: #2a2f3a !important;
+  color: #d7dbe2 !important;
+}
+[data-theme="dark"] .form-floating-group label { color: #6b7280 !important; }
+[data-theme="dark"] .auth-sub,
+[data-theme="dark"] .auth-footer-link { color: #a8afbd !important; }
+

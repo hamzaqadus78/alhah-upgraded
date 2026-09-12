@@ -31,7 +31,7 @@
 
     const btn = document.getElementById('loginBtn');
     btn.disabled = true;
-    btn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Logging in…';
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>Logging in…';
 
     try {
       await AlhahAuth.login(
@@ -43,7 +43,7 @@
     } catch (err) {
       setError(err.message, /verify your email/i.test(err.message));
       btn.disabled = false;
-      btn.innerHTML = '<i class="fas fa-sign-in-alt me-2"></i>Log In';
+      btn.innerHTML = '<i class="fas fa-sign-in-alt"></i>Log In';
     }
   }
 

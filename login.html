@@ -42,29 +42,30 @@
     <div class="container py-5">
         <div class="row justify-content-center">
             <div class="col-md-6 col-lg-5">
-                <div class="checkout-panel">
-                    <h1 class="display-6 text-uppercase mb-1 text-center" style="font-size:1.8rem;">Log In</h1>
-                    <p class="text-muted text-center mb-4">Welcome back — access your order history and check out faster.</p>
+                <div class="auth-card">
+                    <div class="auth-icon"><i class="fas fa-user-lock"></i></div>
+                    <h1 class="auth-title">Welcome back</h1>
+                    <p class="auth-sub">Log in to access your order history and check out faster.</p>
 
                     <div class="checkout-error" id="loginError"></div>
                     <p style="font-size:.9rem;"><a href="#" id="resendVerificationLink" style="display:none;">Resend the verification email</a></p>
                     <p id="resendVerificationStatus" style="display:none;font-size:.9rem;"></p>
 
                     <form id="loginForm">
-                        <div class="mb-3">
-                            <label class="form-label">Username</label>
-                            <input type="text" class="form-control" id="loginUsername" autocomplete="username" required>
+                        <div class="form-floating-group">
+                            <input type="text" id="loginUsername" placeholder=" " autocomplete="username" required>
+                            <label for="loginUsername">Username</label>
                         </div>
-                        <div class="mb-4">
-                            <label class="form-label">Password</label>
-                            <input type="password" class="form-control" id="loginPassword" required>
+                        <div class="form-floating-group">
+                            <input type="password" id="loginPassword" placeholder=" " required>
+                            <label for="loginPassword">Password</label>
                         </div>
-                        <button type="submit" class="btn btn-primary w-100 py-3" id="loginBtn">
-                            <i class="fas fa-sign-in-alt me-2"></i>Log In
+                        <button type="submit" class="auth-submit-btn" id="loginBtn">
+                            <i class="fas fa-sign-in-alt"></i>Log In
                         </button>
                     </form>
 
-                    <p class="text-center mt-4 mb-0" style="font-size:.9rem;">
+                    <p class="auth-footer-link">
                         Don't have an account? <a href="signup.html">Sign up</a>
                     </p>
                 </div>
