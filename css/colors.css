@@ -41,6 +41,27 @@
 .navbar .navbar-nav .nav-link.active {
   color: var(--teal) !important;
 }
+
+/* Login/My Account nav link — an actual outline button next to Cart,
+   not a plain text link (was inheriting the generic `a` teal color,
+   which looked inconsistent, especially in dark mode). */
+#authNavLink {
+  border: 2px solid var(--teal, #006D77) !important;
+  color: var(--teal, #006D77) !important;
+  background: transparent !important;
+  padding: 8px 20px !important;
+  border-radius: var(--theme-btn-radius, 50px) !important;
+  font-weight: 700 !important;
+  font-size: .85rem !important;
+  letter-spacing: .3px;
+  transition: all .25s ease !important;
+  white-space: nowrap;
+}
+#authNavLink:hover {
+  background: var(--teal, #006D77) !important;
+  color: #fff !important;
+  transform: translateY(-2px);
+}
 .dropdown-item.active,
 .dropdown-item:active {
   background-color: var(--teal) !important;
